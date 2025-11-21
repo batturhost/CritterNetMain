@@ -66,6 +66,32 @@ for (var i = 0; i < array_length(applications_list); i++) {
     }
 }
 
+// --- 4. Draw Coin Tray (NEW) ---
+var _tray_width = 130; 
+var _tray_x1 = _gui_width - _tray_width - 4;
+var _tray_y1 = _bar_y1 + 4;
+var _tray_x2 = _gui_width - 4;
+var _tray_y2 = _gui_height - 4;
+
+// Calculate Coin Tray Position (Left of Clock)
+var _coin_w = 100;
+var _coin_x2 = _tray_x1 - 4;
+var _coin_x1 = _coin_x2 - _coin_w;
+var _coin_y1 = _tray_y1;
+var _coin_y2 = _tray_y2;
+
+// Draw Coin Tray Background
+draw_rectangle_95(_coin_x1, _coin_y1, _coin_x2, _coin_y2, "sunken");
+
+// Draw Coins
+draw_set_font(fnt_vga);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_set_color(c_black);
+var _coin_center_y = _coin_y1 + ((_coin_y2 - _coin_y1) / 2);
+var _current_coins = variable_struct_exists(global.PlayerData, "coins") ? global.PlayerData.coins : 0;
+draw_text(_coin_x1 + (_coin_w / 2), _coin_center_y, "$ " + string(_current_coins));
+
 
 // --- 4. Draw Clock Tray ---
 var _tray_width = 130; 

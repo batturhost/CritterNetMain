@@ -265,26 +265,21 @@ switch (current_state) {
         break;
         
     case BATTLE_STATE.WIN_DOWNLOAD_COMPLETE: break;
-
-    case BATTLE_STATE.WIN_END:
-        battle_log_text = "You won the battle! Click to continue.";
-        if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
-            if (is_casual == false) { global.PlayerData.team[0] = player_critter_data;
-                global.PlayerData.current_opponent_index++; } 
-            else { global.PlayerData.team[0] = player_critter_data;
-            }
-            instance_destroy(player_actor); instance_destroy(enemy_actor); instance_destroy();
-        }
+	
+	// --- NEW CASE: BLOCK INPUT WHILE READING COINS ---
+    case BATTLE_STATE.WIN_COIN_WAIT:
+        // Do nothing. Wait for Alarm 0 to trigger.
         break;
 
-    case BATTLE_STATE.LOSE:
-        battle_log_text = "You lost the battle... Click to continue.";
-        if (is_casual == false && !global.bargain_offered) {
-            if (current_opponent_data.name == "BronzeMod") { global.bargain_offered = true;
-                array_push(global.unread_messages, { from: "???", message: "...you cannot win." }); }
-        }
+    case BATTLE_STATE.WIN_END:
+        // [FIX] REMOVED THE LINE THAT WAS OVERWRITING THE TEXT
+        // battle_log_text = "You won the battle! Click to continue."; <--- DELETED
+        
         if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
-            global.PlayerData.team[0] = player_critter_data;
+            if (is_casual == false) { global.PlayerData.team[0] = player_critter_data;
+            global.PlayerData.current_opponent_index++; } 
+            else { global.PlayerData.team[0] = player_critter_data;
+            }
             instance_destroy(player_actor); instance_destroy(enemy_actor); instance_destroy();
         }
         break;

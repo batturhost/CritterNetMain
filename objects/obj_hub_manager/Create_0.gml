@@ -11,7 +11,8 @@ if (!variable_global_exists("PlayerData")) {
         profile_pic: spr_1, 
         current_cup_index: 0, current_opponent_index: 0,
         team: [], pc_box: [], collection_progress: {},
-        starter_key: "arctic_fox", starter_name: "Arctic Fox", starter_nickname: "Debug Fox"
+        starter_key: "arctic_fox", starter_name: "Arctic Fox", starter_nickname: "Debug Fox",
+        coins: 0 // <--- NEW: Currency System
     };
     var _starter_critter = new AnimalData(
         global.bestiary.arctic_fox.animal_name,
@@ -40,6 +41,11 @@ if (!variable_global_exists("PlayerData")) {
     global.tutorial_complete = true;
 }
 
+// Ensure coins exist if loading an old save state in memory
+if (!variable_struct_exists(global.PlayerData, "coins")) {
+    global.PlayerData.coins = 0;
+}
+
 if (!variable_global_exists("tutorial_complete")) {
     global.tutorial_complete = false;
 }
@@ -53,7 +59,7 @@ start_hover_index = -1;
 
 // Menu Layout
 menu_w = 280;
-menu_h = 260; 
+menu_h = 295; 
 menu_item_h = 35;
 
 // Menu Items Array: [ "Label", "Action_String" ]
@@ -65,9 +71,6 @@ menu_items = [
     ["Save Game", "save"],    // <--- NEW ITEM
     ["Shut Down...", "shutdown"]
 ];
-
-// (Also increase menu_h slightly if needed to fit the new item)
-menu_h = 295; // Increased from 260 to fit one more item
 // Define list of apps to check for the Taskbar
 // [Object, Label]
 applications_list = [
@@ -80,10 +83,10 @@ applications_list = [
 ];
 // Depth Manager: Used to bring windows to front
 global.top_window_depth = -100;
-
 // ================== NEW: CHECK FOR DEBUG BATTLE FLAG ==================
 if (variable_global_exists("open_debug_battle") && global.open_debug_battle) {
-    global.open_debug_battle = false; // Reset flag so it doesn't open every time we visit Hub
+    global.open_debug_battle = false;
+// Reset flag so it doesn't open every time we visit Hub
     
     if (!instance_exists(obj_debug_battle_setup)) {
         instance_create_layer(0, 0, "Instances", obj_debug_battle_setup);

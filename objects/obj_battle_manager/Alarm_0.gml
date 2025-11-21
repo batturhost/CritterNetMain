@@ -144,22 +144,47 @@ switch (current_state) {
              current_state = BATTLE_STATE.WIN_LEVEL_UP_MSG;
              alarm[0] = 120;
         } else {
-            // Cap reached or not enough XP
-            current_state = BATTLE_STATE.WIN_END;
-            alarm[0] = 30;
+            // Move to Coin Gain instead of End
+            current_state = BATTLE_STATE.WIN_COIN_GAIN;
+            alarm[0] = 10; // Instant transition
         }
         break;
     case BATTLE_STATE.WIN_LEVEL_UP_MSG:
         // Check again if we leveled up multiple times
-        // [FIX] Added Level Cap Check here too
         if (player_critter_data.level < 100 && player_critter_data.xp >= player_critter_data.next_level_xp) {
             current_state = BATTLE_STATE.WIN_CHECK_LEVEL;
             alarm[0] = 10;
         } else {
-            current_state = BATTLE_STATE.WIN_END;
+            // Move to Coin Gain
+            current_state = BATTLE_STATE.WIN_COIN_GAIN;
             alarm[0] = 30;
         }
         break;
+        
+    case BATTLE_STATE.WIN_COIN_GAIN:
+        // --- CURRENCY CALCULATION ---
+        var _coin_base = enemy_critter_data.level;
+        var _coin_mult = is_casual ? 5 : 20;
+        var _gain = floor(_coin_base * _coin_mult);
+        
+        // Add to wallet
+        if (!variable_struct_exists(global.PlayerData, "coins")) global.PlayerData.coins = 0;
+        global.PlayerData.coins += _gain;
+        
+        battle_log_text = "You found " + string(_gain) + " C-Net Coins!";
+        
+        // Transition to WAIT state (so text isn't overwritten)
+        current_state = BATTLE_STATE.WIN_COIN_WAIT;
+        alarm[0] = 120; // 2 seconds to read
+        break;
+
+    case BATTLE_STATE.WIN_COIN_WAIT:
+        // Time is up, now show the final victory message
+        battle_log_text = "You won the battle! Click to continue.";
+        current_state = BATTLE_STATE.WIN_END;
+        break;
+        
+        
     case BATTLE_STATE.PLAYER_POST_TURN_DAMAGE:
          current_state = BATTLE_STATE.ENEMY_TURN;
          break;
