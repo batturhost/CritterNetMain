@@ -28,6 +28,8 @@
     {"name":"obj_pokedex_manager","order":12,"path":"objects/obj_pokedex_manager/obj_pokedex_manager.yy",},
     {"name":"obj_profile_select_manager","order":23,"path":"objects/obj_profile_select_manager/obj_profile_select_manager.yy",},
     {"name":"obj_sign_up_manager","order":6,"path":"objects/obj_sign_up_manager/obj_sign_up_manager.yy",},
+    {"name":"obj_store_icon","order":24,"path":"objects/obj_store_icon/obj_store_icon.yy",},
+    {"name":"obj_store_manager","order":25,"path":"objects/obj_store_manager/obj_store_manager.yy",},
     {"name":"obj_trapdoor_icon","order":19,"path":"objects/obj_trapdoor_icon/obj_trapdoor_icon.yy",},
     {"name":"obj_trapdoor_manager","order":20,"path":"objects/obj_trapdoor_manager/obj_trapdoor_manager.yy",},
     {"name":"obj_window_parent","order":22,"path":"objects/obj_window_parent/obj_window_parent.yy",},

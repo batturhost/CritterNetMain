@@ -48,6 +48,8 @@
     {"id":{"name":"obj_pokedex_manager","path":"objects/obj_pokedex_manager/obj_pokedex_manager.yy",},},
     {"id":{"name":"obj_profile_select_manager","path":"objects/obj_profile_select_manager/obj_profile_select_manager.yy",},},
     {"id":{"name":"obj_sign_up_manager","path":"objects/obj_sign_up_manager/obj_sign_up_manager.yy",},},
+    {"id":{"name":"obj_store_icon","path":"objects/obj_store_icon/obj_store_icon.yy",},},
+    {"id":{"name":"obj_store_manager","path":"objects/obj_store_manager/obj_store_manager.yy",},},
     {"id":{"name":"obj_trapdoor_icon","path":"objects/obj_trapdoor_icon/obj_trapdoor_icon.yy",},},
     {"id":{"name":"obj_trapdoor_manager","path":"objects/obj_trapdoor_manager/obj_trapdoor_manager.yy",},},
     {"id":{"name":"obj_window_parent","path":"objects/obj_window_parent/obj_window_parent.yy",},},

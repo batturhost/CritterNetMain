@@ -1,6 +1,5 @@
 // --- Create Event ---
 
-// ** THIS IS THE "CRASH-PROOF" DEBUG CHECK **
 // 1. Check if the "save file" exists.
 if (!variable_global_exists("PlayerData")) {
     // DEBUG MODE SETUP
@@ -12,7 +11,8 @@ if (!variable_global_exists("PlayerData")) {
         current_cup_index: 0, current_opponent_index: 0,
         team: [], pc_box: [], collection_progress: {},
         starter_key: "arctic_fox", starter_name: "Arctic Fox", starter_nickname: "Debug Fox",
-        coins: 0 // <--- NEW: Currency System
+        coins: 10000, // Give debug money
+        inventory: [] // <--- NEW: Item Inventory
     };
     var _starter_critter = new AnimalData(
         global.bestiary.arctic_fox.animal_name,
@@ -41,55 +41,57 @@ if (!variable_global_exists("PlayerData")) {
     global.tutorial_complete = true;
 }
 
-// Ensure coins exist if loading an old save state in memory
-if (!variable_struct_exists(global.PlayerData, "coins")) {
-    global.PlayerData.coins = 0;
-}
+// Ensure coins/inventory exist if loading an old save
+if (!variable_struct_exists(global.PlayerData, "coins")) global.PlayerData.coins = 0;
+if (!variable_struct_exists(global.PlayerData, "inventory")) global.PlayerData.inventory = [];
 
-if (!variable_global_exists("tutorial_complete")) {
-    global.tutorial_complete = false;
-}
+if (!variable_global_exists("tutorial_complete")) global.tutorial_complete = false;
 
 // 2. Clock Setup
 time_string = "";
 alarm[0] = 60;
+
 // ================== START MENU & TASKBAR VARS ==================
 start_menu_open = false;
 start_hover_index = -1;
 
-// Menu Layout
 menu_w = 280;
-menu_h = 295; 
+menu_h = 330; // Increased height for new item
 menu_item_h = 35;
 
-// Menu Items Array: [ "Label", "Action_String" ]
 menu_items = [
     ["CritterNet Browser", "browser"],
     ["Bestiary", "pokedex"],
     ["Storage System", "pc"],
     ["Messenger", "messenger"],
-    ["Save Game", "save"],    // <--- NEW ITEM
+    ["C-Store", "store"], // <--- NEW START MENU ITEM
+    ["Save Game", "save"],
     ["Shut Down...", "shutdown"]
 ];
-// Define list of apps to check for the Taskbar
-// [Object, Label]
+
+// Taskbar Apps List
 applications_list = [
     [obj_browser_manager, "Browser"],
     [obj_pokedex_manager, "Bestiary"],
     [obj_pc_manager, "Storage"],
     [obj_messenger_manager, "Messenger"],
+    [obj_store_manager, "C-Store"], // <--- NEW TASKBAR ITEM
     [obj_trapdoor_manager, "TRAPDOOR"],
     [obj_battle_manager, "Battle"]
 ];
-// Depth Manager: Used to bring windows to front
+
 global.top_window_depth = -100;
-// ================== NEW: CHECK FOR DEBUG BATTLE FLAG ==================
+
+// ================== AUTO-SPAWN STORE ICON ==================
+// If the icon isn't in the room (from the editor), spawn it automatically
+if (!instance_exists(obj_store_icon)) {
+    // Position it below the Messenger icon (approx)
+    instance_create_layer(32, 512, "Instances", obj_store_icon);
+}
+
 if (variable_global_exists("open_debug_battle") && global.open_debug_battle) {
     global.open_debug_battle = false;
-// Reset flag so it doesn't open every time we visit Hub
-    
     if (!instance_exists(obj_debug_battle_setup)) {
         instance_create_layer(0, 0, "Instances", obj_debug_battle_setup);
     }
 }
-// ======================================================================
