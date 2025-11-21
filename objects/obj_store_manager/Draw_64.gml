@@ -5,12 +5,14 @@ draw_set_valign(fa_top);
 
 event_inherited(); // Draw Window Frame
 
-// 1. Header
-draw_set_color(c_black);
+// 1. Header Area (Coins)
+// [FIX] Set to White as requested
+draw_set_color(c_white); 
 draw_set_font(fnt_vga_bold);
 draw_text(window_x1 + 20, window_y1 + 40, "Wallet: $ " + string(global.PlayerData.coins));
 
 // Titles for Lists
+// (These will also be white now, since we set color above)
 draw_text(list_store_x1, list_store_y1 - 20, "CATALOG");
 draw_text(list_inv_x1, list_inv_y1 - 20, "MY INVENTORY");
 draw_set_font(fnt_vga);
