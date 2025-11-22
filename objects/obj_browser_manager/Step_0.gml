@@ -4,8 +4,20 @@ event_inherited();
 var _mx = device_mouse_x_to_gui(0);
 var _my = device_mouse_y_to_gui(0);
 var _click = mouse_check_button_pressed(mb_left);
-
 if (heal_message_timer > 0) heal_message_timer--;
+
+// --- PASTE THIS FIX HERE ---
+// [FIX] DEPTH CHECK: Is there a window ON TOP of us?
+var _is_covered = false;
+with (obj_window_parent) {
+    if (id != other.id && visible && depth < other.depth) {
+        if (point_in_rectangle(_mx, _my, window_x1, window_y1, window_x2, window_y2)) {
+            _is_covered = true;
+            break;
+        }
+    }
+}
+if (_is_covered) _click = false;
 
 // BUTTON LOGIC
 if (browser_state == "browsing") {

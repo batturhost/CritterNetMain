@@ -98,6 +98,13 @@ else if (start_menu_open) {
         if (start_hover_index != -1) {
             // CLICKED AN ITEM!
             var _action = menu_items[start_hover_index][1];
+			
+			// [FIX] BATTLE LOCK CHECK
+            if (instance_exists(obj_battle_manager) && (_action == "pc" || _action == "store" || _action == "browser")) {
+                // Optional: Play an error sound here
+                start_menu_open = false;
+                exit; // Stop execution
+            }
             
             switch (_action) {
                 case "browser":

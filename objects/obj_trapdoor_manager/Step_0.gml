@@ -10,6 +10,20 @@ var _key_up = keyboard_check_pressed(vk_up);
 var _key_down = keyboard_check_pressed(vk_down);
 var _key_enter = keyboard_check_pressed(vk_enter);
 
+// --- PASTE THIS FIX HERE ---
+// [FIX] DEPTH CHECK: Is there a window ON TOP of us?
+var _is_covered = false;
+with (obj_window_parent) {
+    if (id != other.id && visible && depth < other.depth) {
+        if (point_in_rectangle(_mx, _my, window_x1, window_y1, window_x2, window_y2)) {
+            _is_covered = true;
+            break;
+        }
+    }
+}
+if (_is_covered) _click = false;
+// ---------------------------
+
 // 2. Logic
 if (feedback_message_timer > 0) {
     feedback_message_timer--;

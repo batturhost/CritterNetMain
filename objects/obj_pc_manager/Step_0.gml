@@ -9,6 +9,32 @@ var _click = mouse_check_button_pressed(mb_left);
 var _held = mouse_check_button(mb_left);
 var _release = mouse_check_button_released(mb_left);
 
+// --- PASTE THIS FIX HERE ---
+// [FIX] DEPTH CHECK: Is there a window ON TOP of us?
+var _is_covered = false;
+with (obj_window_parent) {
+    if (id != other.id && visible && depth < other.depth) {
+        if (point_in_rectangle(_mx, _my, window_x1, window_y1, window_x2, window_y2)) {
+            _is_covered = true;
+            break;
+        }
+    }
+}
+if (_is_covered) {
+    _click = false;
+    _held = false;    // Also disable holding/releasing for the PC manager
+    _release = false; // to prevent accidental drag-drops
+}
+
+// [FIX] BATTLE LOCK: Disable input if battle is active
+if (instance_exists(obj_battle_manager)) {
+    _click = false;
+    _held = false;
+    _release = false;
+    is_renaming = false; // Cancel renaming if active
+    held_critter_index = -1; // Drop any held critter
+}
+
 // --- 2. Update Timers ---
 if (feedback_message_timer > 0) {
     feedback_message_timer--;

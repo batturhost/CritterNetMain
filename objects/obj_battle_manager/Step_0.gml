@@ -16,6 +16,20 @@ var _mx = device_mouse_x_to_gui(0);
 var _my = device_mouse_y_to_gui(0);
 var _click = mouse_check_button_pressed(mb_left);
 
+// --- PASTE THIS FIX HERE ---
+// [FIX] DEPTH CHECK: Is there a window ON TOP of us?
+var _is_covered = false;
+with (obj_window_parent) {
+    if (id != other.id && visible && depth < other.depth) {
+        if (point_in_rectangle(_mx, _my, window_x1, window_y1, window_x2, window_y2)) {
+            _is_covered = true;
+            break;
+        }
+    }
+}
+if (_is_covered) _click = false;
+// ---------------------------
+
 // --- 2. RECALCULATE UI POSITIONS (Sticky UI) ---
 // Actor Home Positions
 player_actor.home_x = window_x1 + (window_width * 0.3);
