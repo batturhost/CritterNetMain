@@ -41,8 +41,19 @@ if (browser_state == "browsing") {
         if (btn_heal_hover) {
             for (var i = 0; i < array_length(global.PlayerData.team); i++) {
                 var _critter = global.PlayerData.team[i];
+                
+                // 1. Restore HP
                 _critter.hp = _critter.max_hp;
-                _critter.atk_stage = 0; _critter.def_stage = 0; _critter.spd_stage = 0;
+                
+                // 2. Reset Battle Stages
+                _critter.atk_stage = 0; 
+                _critter.def_stage = 0; 
+                _critter.spd_stage = 0;
+                
+                // 3. [FIX] Restore PP for all moves
+                for (var m = 0; m < array_length(_critter.moves); m++) {
+                    _critter.move_pp[m] = _critter.moves[m].max_pp;
+                }
             }
             heal_message_text = "All critters fully restored!";
             heal_message_timer = 120;
