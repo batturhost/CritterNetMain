@@ -7,8 +7,25 @@ var _mx = device_mouse_x_to_gui(0);
 var _my = device_mouse_y_to_gui(0);
 var _click = mouse_check_button_pressed(mb_left);
 
-// 2. Internal Button Logic
+// [FIX] DEPTH CHECK: Is there a window ON TOP of us?
+// In GameMaker, LOWER depth = closer to camera (on top).
+// We check if any window has a LOWER depth than us at this position.
+var _is_covered = false;
+with (obj_window_parent) {
+    if (id != other.id && visible && depth < other.depth) {
+        if (point_in_rectangle(_mx, _my, window_x1, window_y1, window_x2, window_y2)) {
+            _is_covered = true;
+            break;
+        }
+    }
+}
+
+// If covered, we force _click to false so no buttons triggers
+if (_is_covered) _click = false;
+
+// 2. Internal Button Logic (Existing Code...)
 btn_hovering = point_in_box(_mx, _my, btn_x1, btn_y1, btn_x2, btn_y2);
+	
 
 if (_click) {
     if (btn_hovering) {
