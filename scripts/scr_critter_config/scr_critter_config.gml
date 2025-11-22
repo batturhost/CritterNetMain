@@ -65,6 +65,8 @@ function get_critter_anim_style(_animal_name, _is_player) {
         // --- OTHER PING-PONG ANIMALS (Optional) ---
         // You can add more here later if you want
         // case "Capybara": return "PINGPONG";
+		case "Capybara": return "PINGPONG";
+		case "Seagull": return "PINGPONG";
 
         // --- DEFAULT (Looping) ---
         default: 
