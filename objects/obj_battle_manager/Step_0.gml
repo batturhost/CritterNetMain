@@ -3,6 +3,11 @@
 // 1. INHERIT PARENT
 event_inherited();
 
+// [FIX] SAFETY CHECK
+// If the parent event destroyed us (clicked 'X'), the actors are gone.
+// We must stop execution immediately to prevent the crash.
+if (!instance_exists(player_actor) || !instance_exists(enemy_actor)) exit;
+
 // [FIX] RE-CALCULATE BOUNDS IMMEDIATELY
 window_x2 = window_x1 + window_width;
 window_y2 = window_y1 + window_height;
@@ -374,7 +379,6 @@ switch (current_state) {
 }
 
 // ================== WEATHER ANIMATION LOGIC ==================
-// [FIX] Use final_w/h to ignore window-opening animation clamping
 var _sim_w = variable_instance_exists(id, "final_w") && final_w > 0 ? final_w : 800;
 var _sim_h = variable_instance_exists(id, "final_h") && final_h > 0 ? final_h : 600;
 
@@ -393,7 +397,7 @@ if (global.weather_condition == "RAIN" || global.weather_condition == "STORM") {
         
         if (_p.y > _sim_h) {
             _p.y = -_p.length;
-            _p.x = irandom(_sim_w); // [FIX] Use target width
+            _p.x = irandom(_sim_w); 
         }
         if (_p.x < 0) _p.x = _sim_w;
     }
@@ -422,7 +426,7 @@ if (global.weather_condition == "SNOW") {
         
         if (_p.y > _sim_h) {
             _p.y = -5;
-            _p.x = irandom(_sim_w); // [FIX] Use target width
+            _p.x = irandom(_sim_w); 
         }
     }
 }
