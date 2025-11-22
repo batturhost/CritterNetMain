@@ -33,11 +33,15 @@ avatar_list = [
     spr_5, spr_6, spr_7, spr_8
 ];
 
+// --- NEW: Upload Counter ---
+uploaded_count = 0;
+
 // 4. Grid Layout (Left Side)
 cell_size = 60; 
 grid_padding = 8;
 grid_cols = 4; 
-grid_rows = 4;
+// [FIX] Increased rows to 5 to allow space/selection for uploaded images
+grid_rows = 5; 
 
 grid_w = (grid_cols * cell_size) + ((grid_cols - 1) * grid_padding);
 grid_h = (grid_rows * cell_size) + ((grid_rows - 1) * grid_padding);
@@ -62,7 +66,6 @@ btn_mock_start_y = preview_y2 + 20;
 // Real OK/Cancel buttons (Bottom Right)
 btn_ok_w = 80;
 btn_ok_h = 26;
-
 // Position at bottom right corner
 btn_cancel_x1 = window_x2 - 20 - btn_ok_w;
 btn_cancel_y1 = window_y2 - 45;

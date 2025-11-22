@@ -37,6 +37,8 @@ hover_index = -1;
 
 if (!is_dragging) {
     // Check Grid Bounds
+    // Note: grid_h is calculated based on grid_rows in Create_0.
+    // Since we increased rows to 5, this hit box covers the new uploads.
     if (_mx >= grid_x1 && _mx <= grid_x1 + grid_w && _my >= grid_y1 && _my <= grid_y1 + grid_h) {
         // Calculate Cell
         var _rel_x = _mx - grid_x1;
@@ -83,19 +85,28 @@ if (!is_dragging) {
         
         // --- BROWSE & UPLOAD ---
         if (_btn_browse_hover) {
-            // 1. Open File Dialog
-            var _path = get_open_filename("Image Files|*.png;*.jpg;*.jpeg;*.gif", "");
             
-            if (_path != "") {
-                // 2. Add Sprite from file
-                // Note: 0,0 origin is used to match the logic in Draw_64
-                var _new_spr = sprite_add(_path, 1, false, false, 0, 0);
+            // [FIX] Limit upload count
+            if (uploaded_count < 4) {
+                // 1. Open File Dialog
+                var _path = get_open_filename("Image Files|*.png;*.jpg;*.jpeg;*.gif", "");
                 
-                if (_new_spr != -1) {
-                    // 3. Add to list and select it
-                    array_push(avatar_list, _new_spr);
-                    selected_index = array_length(avatar_list) - 1;
+                if (_path != "") {
+                    // 2. Add Sprite from file
+                    // Note: 0,0 origin is used to match the logic in Draw_64
+                    var _new_spr = sprite_add(_path, 1, false, false, 0, 0);
+                    
+                    if (_new_spr != -1) {
+                        // 3. Add to list and select it
+                        array_push(avatar_list, _new_spr);
+                        selected_index = array_length(avatar_list) - 1;
+                        uploaded_count++; // Increment count
+                    }
                 }
+            } 
+            else {
+                // Optional: Feedback if limit reached
+                // show_debug_message("Max uploads reached.");
             }
         }
     }
