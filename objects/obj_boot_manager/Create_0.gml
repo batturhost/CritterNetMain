@@ -1,5 +1,7 @@
 // --- Create Event ---
 
+gpu_set_colorwriteenable(true, true, true, false);
+
 // =================================================================
 // DEV TOGGLE: SAVE SYSTEM
 // Set to FALSE to force the game to always start at the Installer.
