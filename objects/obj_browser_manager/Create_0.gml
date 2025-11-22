@@ -29,17 +29,20 @@ if (_opp_index >= array_length(current_cup.opponents)) {
 player_name = global.PlayerData.name;
 player_pfp = global.PlayerData.profile_pic;
 
-// --- STATE MACHINE (Only define these HERE) ---
+// --- STATE MACHINE ---
 browser_state = "browsing"; 
 search_timer = 0;
 match_display_timer = 0;
 
-// --- RANDOMIZATION (Only run THIS here) ---
+// --- RANDOMIZATION ---
+// Format: ["Description", IconIndex, MinTemp, MaxTemp]
 var _w_data = [
     ["Clear Skies", 0, 15, 25], ["Sunny", 0, 20, 32], ["Heatwave", 0, 30, 40],
     ["Partly Cloudy", 1, 12, 22], ["Overcast", 1, 8, 18], ["Foggy", 1, 5, 15],
     ["Light Rain", 2, 10, 18], ["Heavy Rain", 2, 8, 16],
-    ["Thunderstorm", 3, 12, 24], ["Severe Storm", 3, 10, 20]
+    ["Thunderstorm", 3, 12, 24], ["Severe Storm", 3, 10, 20],
+    // [NEW] SNOW TYPES
+    ["Light Snow", 1, -5, 2], ["Snow", 1, -10, 0], ["Blizzard", 1, -20, -5] 
 ];
 var _pick = _w_data[irandom(array_length(_w_data) - 1)];
 weather_desc = _pick[0];
@@ -93,7 +96,6 @@ content_y2 = window_y2 - 2;
 var _start_y = sidebar_y1 + 100;
 var _btn_h = 60;
 var _spacing = 10;
-
 btn_ranked_x1 = sidebar_x1 + 10;
 btn_ranked_y1 = _start_y;
 btn_ranked_x2 = sidebar_x2 - 10;
@@ -114,3 +116,19 @@ btn_heal_hover = false;
 
 heal_message_text = "";
 heal_message_timer = 0;
+
+// --- WEATHER STATE LOGIC ---
+global.weather_condition = "NEUTRAL"; // Default
+
+if (weather_desc == "Sunny" || weather_desc == "Heatwave" || weather_desc == "Clear Skies") {
+    global.weather_condition = "SUN";
+}
+else if (weather_desc == "Light Rain" || weather_desc == "Heavy Rain" || weather_desc == "Foggy") {
+    global.weather_condition = "RAIN";
+}
+else if (weather_desc == "Thunderstorm" || weather_desc == "Severe Storm") {
+    global.weather_condition = "STORM";
+}
+else if (weather_desc == "Snow" || weather_desc == "Light Snow" || weather_desc == "Blizzard") {
+    global.weather_condition = "SNOW";
+}

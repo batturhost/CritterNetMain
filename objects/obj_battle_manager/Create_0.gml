@@ -47,16 +47,17 @@ enum BATTLE_STATE {
     WIN_DOWNLOAD_PROGRESS, WIN_DOWNLOAD_COMPLETE,
     WIN_XP_GAIN, WIN_CHECK_LEVEL, WIN_LEVEL_UP_MSG, 
     WIN_COIN_GAIN, 
-    WIN_COIN_WAIT, // <--- NEW STATE ADDED HERE
+    WIN_COIN_WAIT,
     WIN_END, LOSE,
     WAIT_FOR_HP_DRAIN
 }
 current_state = BATTLE_STATE.START;
-current_state = BATTLE_STATE.START;
+
 // 5. Menu States
 enum MENU { MAIN, FIGHT, TEAM }
 current_menu = MENU.MAIN;
 menu_focus = 0;
+
 // 6. UI & Actors Setup
 info_box_width = 300; 
 info_box_height = 80;
@@ -122,14 +123,11 @@ recalculate_stats(player_critter_data);
 recalculate_stats(enemy_critter_data);
 player_critter_data.hp = global.PlayerData.team[0].hp;
 
-// ================== NEW SCALING SYSTEM ==================
+// ================== SCALING SYSTEM ==================
 var _p_scale_mult = get_critter_scale_config(player_critter_data.animal_name, true); // TRUE for Player
-var _e_scale_mult = get_critter_scale_config(enemy_critter_data.animal_name, false); // FALSE for Enemy
-
-// Apply Base Scale (0.33) * Perspective (1.30 for player) * Config Multiplier
+var _e_scale_mult = get_critter_scale_config(enemy_critter_data.animal_name, false);
 player_actor.my_scale = 0.33 * 1.30 * _p_scale_mult;
 enemy_actor.my_scale = 0.33 * _e_scale_mult;
-// ========================================================
 
 // 7. Misc
 battle_log_text = "The battle begins!";
@@ -152,16 +150,10 @@ player_visual_hp = player_critter_data.hp;
 enemy_visual_hp = enemy_critter_data.hp;
 hp_drain_speed = 0.5; 
 next_state_after_drain = BATTLE_STATE.WAIT_FOR_PLAYER_MOVE; 
-
-// ================== NEW: HP BLINK TIMER ==================
 hp_blink_timer = 0;
-// =========================================================
 
-// ============================================================================
-//   CORE BATTLE LOGIC FUNCTION
-// ============================================================================
+// ================== CORE BATTLE LOGIC ==================
 perform_turn_logic = function(_user_actor, _target_actor, _user_data, _target_data, _move_index) {
-    
     var _move = _user_data.moves[_move_index];
     if (_user_data.move_pp[_move_index] > 0) {
         _user_data.move_pp[_move_index]--;
@@ -169,7 +161,6 @@ perform_turn_logic = function(_user_actor, _target_actor, _user_data, _target_da
     
     battle_log_text = _user_data.nickname + " used " + _move.move_name + "!";
     switch (_move.move_type) {
-        
         case MOVE_TYPE.DAMAGE:
             // Visuals
             if (_move.move_name == "Snap" || _move.move_name == "Poison Bite" || _move.move_name == "Bamboo Bite") {
@@ -201,7 +192,6 @@ perform_turn_logic = function(_user_actor, _target_actor, _user_data, _target_da
             // Damage Calc
             var _atk_mult = get_stat_multiplier(_user_data.atk_stage);
             var _def_mult = get_stat_multiplier(_target_data.def_stage);
-            
             var _type_mult = 1.0;
             if (variable_struct_exists(_move, "element") && variable_struct_exists(_target_data, "element_type")) {
                 _type_mult = get_type_effectiveness(_move.element, _target_data.element_type);
@@ -211,7 +201,8 @@ perform_turn_logic = function(_user_actor, _target_actor, _user_data, _target_da
             var A = _user_data.atk * _atk_mult; 
             var D = _target_data.defense * _def_mult;
             var P = _move.atk;
-            // --- UPDATED DAMAGE FORMULA ---
+            
+            // Damage Formula
             var _damage = floor( ( ( ( (2 * L / 5) + 2 ) * P * (A / D) ) / 35 ) + 2 );
             _damage = floor(_damage * _type_mult);
             
@@ -230,13 +221,10 @@ perform_turn_logic = function(_user_actor, _target_actor, _user_data, _target_da
         case MOVE_TYPE.HEAL:
             var _heal_amount = _move.effect_power;
             if (is_string(_heal_amount)) _heal_amount = real(_heal_amount); 
-            
             _user_data.hp = min(_user_data.hp + _heal_amount, _user_data.max_hp);
-
             if (_move.move_name == "Take a Nap") effect_play_sleep(_user_actor);
             else if (_move.move_name == "Regenerate") effect_play_hearts(_user_actor); 
             else effect_play_heal_flash(_user_actor);
-            
             battle_log_text = _user_data.nickname + " healed!"; 
             break;
         case MOVE_TYPE.STAT_DEBUFF:
@@ -271,35 +259,82 @@ perform_turn_logic = function(_user_actor, _target_actor, _user_data, _target_da
                 effect_play_hurt(_target_actor); 
             }
             else if (_move.move_name == "Snow Cloak") { effect_play_snow(_user_actor);
-                battle_log_text = _user_data.nickname + " hid in the snow!"; } 
+            battle_log_text = _user_data.nickname + " hid in the snow!"; } 
             else if (_move.move_name == "Zen Barrier") { effect_play_zen(_user_actor);
-                battle_log_text = _user_data.nickname + " meditated! Defense rose!"; } 
+            battle_log_text = _user_data.nickname + " meditated! Defense rose!"; } 
             else if (_move.move_name == "Wall Climb") { effect_play_up_arrow(_user_actor);
-                _user_data.spd_stage += 1; battle_log_text = _user_data.nickname + " climbed up! Speed rose!";
+            _user_data.spd_stage += 1; battle_log_text = _user_data.nickname + " climbed up! Speed rose!";
             } 
             else if (_move.move_name == "Tail Shed") { effect_play_tail_shed(_user_actor);
-                _user_data.def_stage += 2; battle_log_text = _user_data.nickname + " shed its tail! Defense rose sharply!";
+            _user_data.def_stage += 2; battle_log_text = _user_data.nickname + " shed its tail! Defense rose sharply!";
             } 
             else if (_move.move_name == "Withdraw") { effect_play_shield(_user_actor);
-                _user_data.def_stage += 2; battle_log_text = _user_data.nickname + " withdrew! Defense rose sharply!";
+            _user_data.def_stage += 2; battle_log_text = _user_data.nickname + " withdrew! Defense rose sharply!";
             } 
             else if (_move.move_name == "Zoomies") { effect_play_zoomies(_user_actor);
-                _user_data.spd_stage += 2; battle_log_text = _user_data.nickname + " got the zoomies! Speed rose sharply!";
+            _user_data.spd_stage += 2; battle_log_text = _user_data.nickname + " got the zoomies! Speed rose sharply!";
             }
             else if (_move.move_name == "Fluff Puff") { effect_play_puff(_user_actor);
-                _user_data.def_stage += 1; battle_log_text = _user_data.nickname + " puffed up! Defense rose!";
+            _user_data.def_stage += 1; battle_log_text = _user_data.nickname + " puffed up! Defense rose!";
             }
             else if (_move.move_name == "Dust Bath") { effect_play_dust(_user_actor);
-                _user_data.def_stage += 1; battle_log_text = _user_data.nickname + " rolled in dust! Defense rose!";
+            _user_data.def_stage += 1; battle_log_text = _user_data.nickname + " rolled in dust! Defense rose!";
             }
             else if (_move.move_name == "Coil") { effect_play_coil(_user_actor);
-                _user_data.atk_stage += 1; battle_log_text = _user_data.nickname + " coiled up! Attack rose!";
+            _user_data.atk_stage += 1; battle_log_text = _user_data.nickname + " coiled up! Attack rose!";
             }
             else if (_move.move_name == "Lazy Stance") { effect_play_lazy(_user_actor);
-                _user_data.def_stage += 1; battle_log_text = _user_data.nickname + " is slacking off! Defense rose!";
+            _user_data.def_stage += 1; battle_log_text = _user_data.nickname + " is slacking off! Defense rose!";
             }
             else { battle_log_text = _user_data.nickname + "'s stats rose!";
             }
             break;
+    }
+};
+
+// ================== NEW: WEATHER VISUALS SETUP ==================
+weather_particles = [];
+weather_flash_alpha = 0; // For lightning
+sun_glow_timer = 0;      // For pulsing sun effect
+
+// 1. Generate Rain/Storm Particles
+if (global.weather_condition == "RAIN" || global.weather_condition == "STORM") {
+    var _count = (global.weather_condition == "STORM") ? 100 : 60;
+    
+    for (var i = 0; i < _count; i++) {
+        array_push(weather_particles, {
+            x: irandom(window_width),
+            y: irandom(window_height),
+            speed: irandom_range(8, 12),     // Fast falling
+            length: irandom_range(10, 20),   // Raindrop length
+            width: irandom_range(1, 2)       // Raindrop thickness
+        });
+    }
+}
+
+// 2. Generate Sun "Glare" Particles (Floating dust/pollen)
+if (global.weather_condition == "SUN") {
+    for (var i = 0; i < 20; i++) {
+        array_push(weather_particles, {
+            x: irandom(window_width),
+            y: irandom(window_height),
+            speed_y: random_range(-0.2, -0.5), // Float UP slightly
+            speed_x: random_range(-0.2, 0.2),  // Drift side-to-side
+            size: random_range(2, 5),
+            alpha: random_range(0.2, 0.6)
+        });
+    }
+}
+
+// 3. Generate Snow Particles (NEW)
+if (global.weather_condition == "SNOW") {
+    for (var i = 0; i < 50; i++) {
+        array_push(weather_particles, {
+            x: irandom(window_width),
+            y: irandom(window_height),
+            speed: random_range(1, 3),       // Slow fall
+            size: random_range(2, 4),        // Snowflake size
+            sway_offset: random(2 * pi)      // Random start for horizontal sway
+        });
     }
 }

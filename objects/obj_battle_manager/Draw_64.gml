@@ -19,10 +19,94 @@ draw_set_color(c_teal);
 draw_rectangle(_inner_x, _inner_y, _inner_x + _inner_w, _inner_y + _inner_h, false);
 draw_scanlines_95(_inner_x, _inner_y, _inner_x + _inner_w, _inner_y + _inner_h);
 
+// ================== WEATHER DRAWING START ==================
+if (global.weather_condition == "RAIN" || global.weather_condition == "STORM") {
+    // 1. Draw Dark Storm Overlay
+    if (global.weather_condition == "STORM") {
+        draw_set_color(c_black);
+        draw_set_alpha(0.3);
+        draw_rectangle(_inner_x, _inner_y, _inner_x + _inner_w, _inner_y + _inner_h, false);
+    }
+
+    // 2. Draw Raindrops
+    draw_set_color(c_aqua); // Cyan for retro rain feel
+    draw_set_alpha(0.6);
+    
+    for (var i = 0; i < array_length(weather_particles); i++) {
+        var _p = weather_particles[i];
+        
+        // Calculate screen position
+        var _dx = _inner_x + _p.x;
+        var _dy = _inner_y + _p.y;
+        
+        // Don't draw if outside the box (optimization)
+        if (_dx > _inner_x && _dx < _inner_x + _inner_w && _dy > _inner_y && _dy < _inner_y + _inner_h) {
+            // Slant lines for storm
+            var _slant = (global.weather_condition == "STORM") ? -5 : 0;
+            draw_line_width(_dx, _dy, _dx + _slant, _dy + _p.length, _p.width);
+        }
+    }
+    
+    // 3. Lightning Flash
+    if (weather_flash_alpha > 0) {
+        draw_set_color(c_white);
+        draw_set_alpha(weather_flash_alpha);
+        draw_rectangle(_inner_x, _inner_y, _inner_x + _inner_w, _inner_y + _inner_h, false);
+    }
+}
+else if (global.weather_condition == "SUN") {
+    // 1. Draw Warm Glow Overlay (Pulsing)
+    var _pulse = (sin(sun_glow_timer / 60) * 0.1) + 0.1; // 0.0 to 0.2 alpha
+    draw_set_color(c_orange);
+    draw_set_alpha(_pulse);
+    draw_rectangle(_inner_x, _inner_y, _inner_x + _inner_w, _inner_y + _inner_h, false);
+    
+    // 2. Draw Floating "Dust/Pollen"
+    draw_set_color(c_yellow);
+    for (var i = 0; i < array_length(weather_particles); i++) {
+        var _p = weather_particles[i];
+        var _dx = _inner_x + _p.x;
+        var _dy = _inner_y + _p.y;
+        
+        draw_set_alpha(_p.alpha);
+        draw_circle(_dx, _dy, _p.size, false);
+    }
+    
+    // 3. Draw "Lens Flare" Circle in top-right corner
+    draw_set_color(c_white);
+    draw_set_alpha(0.1);
+    draw_circle(_inner_x + _inner_w - 50, _inner_y + 50, 80, false);
+    draw_circle(_inner_x + _inner_w - 50, _inner_y + 50, 60, false);
+}
+else if (global.weather_condition == "SNOW") {
+    // 1. Draw Cold Overlay
+    draw_set_color(c_white);
+    draw_set_alpha(0.1);
+    draw_rectangle(_inner_x, _inner_y, _inner_x + _inner_w, _inner_y + _inner_h, false);
+    
+    // 2. Draw Snowflakes
+    draw_set_alpha(0.8);
+    for (var i = 0; i < array_length(weather_particles); i++) {
+        var _p = weather_particles[i];
+        var _dx = _inner_x + _p.x;
+        var _dy = _inner_y + _p.y;
+        
+        // Only draw if inside bounds
+        if (_dx > _inner_x && _dx < _inner_x + _inner_w && _dy > _inner_y && _dy < _inner_y + _inner_h) {
+            draw_circle(_dx, _dy, _p.size, false);
+        }
+    }
+}
+
+// Reset Draw Settings
+draw_set_alpha(1.0);
+draw_set_color(c_white);
+// ================== WEATHER DRAWING END ==================
+
+
 // --- CHECK FOR DOWNLOAD STATE ---
 if (current_state == BATTLE_STATE.WIN_DOWNLOAD_PROGRESS || current_state == BATTLE_STATE.WIN_DOWNLOAD_COMPLETE)
 {
-    // ... (Keep Download Modal Logic Unchanged) ...
     // === DRAW MODAL POPUP WINDOW ===
     var _pop_w = 440;
     var _pop_h = 400;
@@ -37,7 +121,6 @@ if (current_state == BATTLE_STATE.WIN_DOWNLOAD_PROGRESS || current_state == BATT
     // 2. Draw Title Bar
     draw_set_color(c_navy);
     draw_rectangle(_pop_x1 + 2, _pop_y1 + 2, _pop_x2 - 2, _pop_y1 + 32, false);
-    
     draw_set_color(c_white);
     draw_set_halign(fa_left);
     draw_set_valign(fa_middle);
@@ -86,10 +169,10 @@ if (current_state == BATTLE_STATE.WIN_DOWNLOAD_PROGRESS || current_state == BATT
         var _center_x = _pop_x1 + (_pop_w/2);
         var _visual_center_y = _pop_y1 + 175;
         var _max_w = 140; 
-        var _max_h = 140; 
+        var _max_h = 140;
 
         // Draw "Sunken" Frame for sprite
-        var _box_w = 150; 
+        var _box_w = 150;
         var _box_h = 150; 
         draw_rectangle_95(_center_x - _box_w/2, _visual_center_y - _box_h/2, _center_x + _box_w/2, _visual_center_y + _box_h/2, "sunken");
 
@@ -99,12 +182,10 @@ if (current_state == BATTLE_STATE.WIN_DOWNLOAD_PROGRESS || current_state == BATT
 
         // Draw Sprite Position (Bottom-Center Origin Fix)
         var _draw_y = _visual_center_y + ((_spr_h / 2) * _fit_scale);
-
         draw_sprite_ext(download_sprite, 0, _center_x, _draw_y, _fit_scale, _fit_scale, 0, c_white, 1);
 
         draw_set_color(c_black);
         draw_text(_pop_x1 + (_pop_w/2), _pop_y2 - 120, "You acquired data for:");
-        
         draw_set_color(c_yellow);
         draw_text(_pop_x1 + (_pop_w/2), _pop_y2 - 95, enemy_critter_data.animal_name);
     }
@@ -126,7 +207,6 @@ else
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_color(c_black);
-
     if (!(current_state == BATTLE_STATE.PLAYER_TURN && (current_menu == MENU.FIGHT || current_menu == MENU.TEAM))) {
         draw_text(window_x1 + 15, _log_y1 + 10, battle_log_text);
     }
@@ -141,14 +221,14 @@ else
     draw_set_halign(fa_right);
     draw_text(info_enemy_x2 - 10, info_enemy_y1 + 8, "Lv. " + string(enemy_critter_data.level));
     draw_set_halign(fa_left);
-    
+
     // --- VISUAL HP BAR UPDATE (ENEMY) ---
-    var _e_hp_perc = enemy_visual_hp / enemy_critter_data.max_hp; 
+    var _e_hp_perc = enemy_visual_hp / enemy_critter_data.max_hp;
     var _e_bar_x1 = info_enemy_x1 + 10; var _e_bar_y1 = info_enemy_y1 + 40;
     var _e_bar_x2 = info_enemy_x2 - 10;
     var _e_bar_y2 = info_enemy_y1 + 60;
-    draw_rectangle_95(_e_bar_x1, _e_bar_y1, _e_bar_x2, _e_bar_y2, "sunken"); 
-    
+    draw_rectangle_95(_e_bar_x1, _e_bar_y1, _e_bar_x2, _e_bar_y2, "sunken");
+
     // Determine Color (Green > 50%, Yellow > 20%, Red <= 20%)
     var _e_col = c_green;
     if (_e_hp_perc <= 0.5) _e_col = c_yellow;
@@ -159,9 +239,10 @@ else
         if (current_state != BATTLE_STATE.WAIT_FOR_HP_DRAIN) {
             // Use a sine wave for smooth fade: (sin(time) + 1) / 2 gives 0 to 1
             // Multiply time by a small number to slow it down
-            var _blink_amt = (sin(current_time / 150) + 1) / 2; 
+            var _blink_amt = (sin(current_time / 150) + 1) / 2;
             // Blend between Red and White
-            _e_col = merge_color(c_red, c_white, _blink_amt * 0.7); // 0.7 keeps it from going purely white
+            _e_col = merge_color(c_red, c_white, _blink_amt * 0.7);
+            // 0.7 keeps it from going purely white
         }
     }
     
@@ -177,24 +258,23 @@ else
     draw_set_halign(fa_right);
     draw_text(info_player_x2 - 10, info_player_y1 + 8, "Lv. " + string(player_critter_data.level));
     draw_set_halign(fa_left);
-    
+
     // --- VISUAL HP BAR UPDATE (PLAYER) ---
-    var _p_hp_perc = player_visual_hp / player_critter_data.max_hp; 
+    var _p_hp_perc = player_visual_hp / player_critter_data.max_hp;
     var _p_bar_x1 = info_player_x1 + 10; var _p_bar_y1 = info_player_y1 + 40;
     var _p_bar_x2 = info_player_x2 - 10;
     var _p_bar_y2 = info_player_y1 + 60;
-    draw_rectangle_95(_p_bar_x1, _p_bar_y1, _p_bar_x2, _p_bar_y2, "sunken"); 
-    
+    draw_rectangle_95(_p_bar_x1, _p_bar_y1, _p_bar_x2, _p_bar_y2, "sunken");
+
     // Determine Color
     var _p_col = c_green;
     if (_p_hp_perc <= 0.5) _p_col = c_yellow;
-    
     if (_p_hp_perc <= 0.2) {
         _p_col = c_red;
         // [FIX] Smooth Blink Logic
         if (current_state != BATTLE_STATE.WAIT_FOR_HP_DRAIN) {
             // Use a sine wave for smooth fade: (sin(time) + 1) / 2 gives 0 to 1
-            var _blink_amt = (sin(current_time / 150) + 1) / 2; 
+            var _blink_amt = (sin(current_time / 150) + 1) / 2;
             // Blend between Red and White
             _p_col = merge_color(c_red, c_white, _blink_amt * 0.7);
         }
@@ -211,7 +291,7 @@ else
     }
     _xp_perc = clamp(_xp_perc, 0, 1);
 
-    var _xp_bar_y1 = _p_bar_y2 + 4; 
+    var _xp_bar_y1 = _p_bar_y2 + 4;
     var _xp_bar_y2 = _xp_bar_y1 + 6; 
     
     // Draw Background (Dark Gray)
@@ -253,7 +333,6 @@ else
                     var _btn = btn_team_layout[i];
                     var _state = (menu_focus == i) ? "sunken" : "raised";
                     draw_rectangle_95(_btn[0], _btn[1], _btn[2], _btn[3], _state);
-
                     if (i < _team_size) {
                         var _critter = global.PlayerData.team[i];
                         if (_critter.hp <= 0 || _critter == player_critter_data) draw_set_color(c_dkgray);
@@ -273,7 +352,8 @@ else
                         
                         gpu_set_scissor(_frame_x1 + 2, _frame_y1 + 2, _frame_w - 4, _frame_h - 4);
                         draw_sprite_ext(_sprite, 0, _icon_x, _icon_draw_y, _scale, _scale, 0, c_white, 1);
-                        gpu_set_scissor(_inner_x, _inner_y, _inner_w, _inner_h); // Restore main scissor
+                        gpu_set_scissor(_inner_x, _inner_y, _inner_w, _inner_h);
+                        // Restore main scissor
                         
                         var _text_x = _frame_x2 + 10;
                         draw_text(_text_x, _btn[1] + 10, _critter.nickname);
@@ -290,7 +370,6 @@ else
                         
                         draw_set_color(_team_col);
                         draw_rectangle(_hp_bar_x1 + 2, _hp_bar_y1 + 2, _hp_bar_x1 + 2 + ((_hp_bar_w - 4) * _hp_perc), _hp_bar_y1 + _hp_bar_h - 2, false);
-                        
                         draw_set_color(c_black);
                         draw_set_halign(fa_right);
                         draw_text(_btn[2] - 10, _btn[1] + 55, string(_critter.hp) + "/" + string(_critter.max_hp));
@@ -309,7 +388,6 @@ else
 }
 
 gpu_set_scissor(0, 0, display_get_gui_width(), display_get_gui_height());
-
 // Reset
 draw_set_color(c_white);
 draw_set_halign(fa_left);

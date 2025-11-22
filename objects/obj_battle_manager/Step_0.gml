@@ -310,11 +310,11 @@ switch (current_state) {
         
     // ================== NEW: LOSE STATE LOGIC ==================
     case BATTLE_STATE.LOSE:
-        // [UPDATED] Now shows specific critter name
-        battle_log_text = "You have lost the battle!";
+        // [UPDATED] Shows specific critter name
+        battle_log_text = player_critter_data.nickname + " fainted! You have lost the battle!";
         
         if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
-            // Heal Team (Quality of Life fix so you aren't stuck)
+            // Heal Team
             for (var i = 0; i < array_length(global.PlayerData.team); i++) {
                 global.PlayerData.team[i].hp = global.PlayerData.team[i].max_hp;
             }
@@ -324,4 +324,63 @@ switch (current_state) {
             instance_destroy();
         }
         break;
+}
+
+// ================== WEATHER ANIMATION LOGIC (MUST BE OUTSIDE SWITCH) ==================
+
+// 1. Update Rain/Storm
+if (global.weather_condition == "RAIN" || global.weather_condition == "STORM") {
+    // Lightning Logic
+    if (global.weather_condition == "STORM") {
+        if (weather_flash_alpha > 0) weather_flash_alpha -= 0.05;
+        if (irandom(200) == 0) weather_flash_alpha = 0.8;
+    }
+
+    // Move Particles
+    for (var i = 0; i < array_length(weather_particles); i++) {
+        var _p = weather_particles[i];
+        _p.y += _p.speed;
+        
+        if (global.weather_condition == "STORM") _p.x -= 2; 
+        
+        if (_p.y > window_height) {
+            _p.y = -_p.length;
+            _p.x = irandom(window_width);
+        }
+        if (_p.x < 0) _p.x = window_width;
+    }
+}
+
+// 2. Update Sun
+if (global.weather_condition == "SUN") {
+    sun_glow_timer++;
+    for (var i = 0; i < array_length(weather_particles); i++) {
+        var _p = weather_particles[i];
+        _p.y += _p.speed_y;
+        _p.x += _p.speed_x;
+        
+        if (_p.y < 0) _p.y = window_height;
+        if (_p.x > window_width) _p.x = 0;
+        if (_p.x < 0) _p.x = window_width;
+    }
+}
+
+// 3. Update Snow (THE FIX)
+if (global.weather_condition == "SNOW") {
+    for (var i = 0; i < array_length(weather_particles); i++) {
+        var _p = weather_particles[i]; // Get reference to particle
+        
+        // Move Down
+        _p.y += _p.speed;
+        
+        // Sway Motion (Sine wave)
+        // We add to X based on time to create a gentle drift
+        _p.x += sin((current_time / 500) + _p.sway_offset) * 0.5;
+        
+        // Reset loop when it hits bottom
+        if (_p.y > window_height) {
+            _p.y = -5;
+            _p.x = irandom(window_width);
+        }
+    }
 }
