@@ -36,7 +36,6 @@ if (window_width > 50) {
 // Draw Outer Border (Raised)
 draw_border_95(window_x1, window_y1, window_x2, window_y2, "raised");
 
-
 // ================== 3. CONTENT AREA ==================
 var _content_y = window_y1 + 32;
 var _margin = 2;
@@ -58,7 +57,6 @@ draw_text_transformed(_header_x, _header_y, "Select a picture", 1.2, 1.2, 0);
 draw_set_font(fnt_vga);
 draw_set_color(c_dkgray);
 draw_text(_header_x, _header_y + 30, "Choose how you want to appear on CritterNet.");
-
 
 // ================== 4. AVATAR GRID ==================
 for (var i = 0; i < array_length(avatar_list); i++) {
@@ -87,16 +85,16 @@ for (var i = 0; i < array_length(avatar_list); i++) {
     var _sw = sprite_get_width(_spr);
     var _sh = sprite_get_height(_spr);
     var _scale = min(cell_size / _sw, cell_size / _sh);
-    
+
     var _draw_x = _cx + (cell_size/2);
     var _draw_y = _cy + (cell_size/2);
     
     var _x_off = sprite_get_xoffset(_spr);
     var _y_off = sprite_get_yoffset(_spr);
-    
+
     var _final_x = _draw_x + (_x_off - (_sw/2)) * _scale;
     var _final_y = _draw_y + (_y_off - (_sh/2)) * _scale;
-    
+
     draw_sprite_ext(_spr, 0, _final_x, _final_y, _scale, _scale, 0, c_white, 1);
 }
 
@@ -113,7 +111,7 @@ if (selected_index >= 0 && selected_index < array_length(avatar_list)) {
     var _bsw = sprite_get_width(_big_spr);
     var _bsh = sprite_get_height(_big_spr);
     var _b_scale = min((preview_box_size - 30) / _bsw, (preview_box_size - 30) / _bsh);
-    
+
     var _p_center_x = preview_x1 + (preview_box_size / 2);
     var _p_center_y = preview_y1 + (preview_box_size / 2);
     
@@ -125,20 +123,24 @@ if (selected_index >= 0 && selected_index < array_length(avatar_list)) {
     draw_sprite_ext(_big_spr, 0, _p_final_x, _p_final_y, _b_scale, _b_scale, 0, c_white, 1);
 }
 
-// Mock Buttons
-var _mock_labels = ["Browse...", "Remove", "Modify..."];
-for (var j = 0; j < 3; j++) {
-    var _bx1 = btn_mock_x;
-    var _by1 = btn_mock_start_y + (j * (btn_mock_h + 5));
-    var _bx2 = _bx1 + btn_mock_w;
-    var _by2 = _by1 + btn_mock_h;
-    
-    draw_rectangle_95(_bx1, _by1, _bx2, _by2, "raised");
-    draw_set_color(c_black);
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_middle);
-    draw_text(_bx1 + (btn_mock_w/2), _by1 + (btn_mock_h/2), _mock_labels[j]);
+// --- UPDATED: Single Browse Button (Removed Remove/Modify) ---
+var _bx1 = btn_mock_x;
+var _by1 = btn_mock_start_y; 
+var _bx2 = _bx1 + btn_mock_w;
+var _by2 = _by1 + btn_mock_h;
+
+// Determine hover/click state visually
+var _browse_state = "raised";
+if (point_in_rectangle(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), _bx1, _by1, _bx2, _by2)) {
+     // Check if mouse is held down for "sunken" effect
+     _browse_state = mouse_check_button(mb_left) ? "sunken" : "raised";
 }
+
+draw_rectangle_95(_bx1, _by1, _bx2, _by2, _browse_state);
+draw_set_color(c_black);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_text(_bx1 + (btn_mock_w/2), _by1 + (btn_mock_h/2), "Browse...");
 
 
 // ================== 6. FOOTER BUTTONS ==================

@@ -92,8 +92,7 @@ if (current_state == BATTLE_STATE.PLAYER_TURN && current_menu == MENU.FIGHT) {
 }
 
 // ================== UPDATED: SLOWER BLINK TIMER ==================
-// Increased cycle from 20 to 60 frames (1 second cycle at 60fps)
-hp_blink_timer = (hp_blink_timer + 1) % 60; 
+hp_blink_timer = (hp_blink_timer + 1) % 60;
 // ================================================================
 
 // --- 4. Battle State Machine ---
@@ -120,14 +119,14 @@ switch (current_state) {
             if (_up) menu_focus = max(0, menu_focus - 2);
             if (_down) menu_focus = min(3, menu_focus + 2);
             if (_left) { if (menu_focus == 1) menu_focus = 0;
-                         if (menu_focus == 3) menu_focus = 2; }
+            if (menu_focus == 3) menu_focus = 2; }
             if (_right) { if (menu_focus == 0) menu_focus = 1;
-                          if (menu_focus == 2) menu_focus = 3; }
+            if (menu_focus == 2) menu_focus = 3; }
         } else if (current_menu == MENU.TEAM) {
              if (_up) { if (menu_focus == 6) menu_focus = 4;
-                        else menu_focus = max(0, menu_focus - 2); }
+             else menu_focus = max(0, menu_focus - 2); }
              if (_down) { if (menu_focus >= 4) menu_focus = 6;
-                          else menu_focus = min(5, menu_focus + 2); }
+             else menu_focus = min(5, menu_focus + 2); }
              if (_left) { if (menu_focus % 2 == 1) menu_focus--;
              }
              if (_right) { if (menu_focus % 2 == 0 && menu_focus < 6) menu_focus++;
@@ -146,11 +145,11 @@ switch (current_state) {
                     break; }
                     switch (menu_focus) {
                         case 0: current_menu = MENU.FIGHT;
-                                menu_focus = 0; break;
+                        menu_focus = 0; break;
                         case 1: current_menu = MENU.TEAM; menu_focus = 0; break;
                         case 2: battle_log_text = "Item select not implemented yet!"; break;
                         case 3: if (is_casual) { battle_log_text = "You fled from the casual battle!"; current_state = BATTLE_STATE.LOSE;
-                                } else { battle_log_text = "You can't run from a ranked match!"; } break;
+                        } else { battle_log_text = "You can't run from a ranked match!"; } break;
                     }
                 }
                 break;
@@ -165,7 +164,7 @@ switch (current_state) {
                 
                 if (_key_enter) {
                     if (menu_focus == 3) { current_menu = MENU.MAIN;
-                                           menu_focus = 0; }
+                    menu_focus = 0; }
                     else if (menu_focus < array_length(player_critter_data.moves)) {
                         if (player_critter_data.move_pp[menu_focus] > 0) {
                             player_chosen_move_index = menu_focus;
@@ -181,8 +180,8 @@ switch (current_state) {
             case MENU.TEAM:
                 var _team_size = array_length(global.PlayerData.team);
                 for (var i = 0; i < _team_size; i++) { var _btn = btn_team_layout[i];
-                    if (point_in_box(_mx, _my, _btn[0], _btn[1], _btn[2], _btn[3])) { menu_focus = i; if (_click) _key_enter = true;
-                    } }
+                if (point_in_box(_mx, _my, _btn[0], _btn[1], _btn[2], _btn[3])) { menu_focus = i; if (_click) _key_enter = true;
+                } }
                 var _cancel_btn = btn_team_layout[6];
                 if (point_in_box(_mx, _my, _cancel_btn[0], _cancel_btn[1], _cancel_btn[2], _cancel_btn[3])) { menu_focus = 6; if (_click) _key_enter = true;
                 }
@@ -265,16 +264,12 @@ switch (current_state) {
         break;
         
     case BATTLE_STATE.WIN_DOWNLOAD_COMPLETE: break;
-	
-	// --- NEW CASE: BLOCK INPUT WHILE READING COINS ---
+
     case BATTLE_STATE.WIN_COIN_WAIT:
-        // Do nothing. Wait for Alarm 0 to trigger.
+        // Do nothing. Wait for Alarm 0.
         break;
 
     case BATTLE_STATE.WIN_END:
-        // [FIX] REMOVED THE LINE THAT WAS OVERWRITING THE TEXT
-        // battle_log_text = "You won the battle! Click to continue."; <--- DELETED
-        
         if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
             if (is_casual == false) { global.PlayerData.team[0] = player_critter_data;
             global.PlayerData.current_opponent_index++; } 
@@ -293,26 +288,40 @@ switch (current_state) {
         battle_log_text = enemy_critter_data.nickname + " is damaged by the corruption!";
         var _passive_dmg = floor(enemy_critter_data.max_hp * 0.1); enemy_critter_data.hp = max(0, enemy_critter_data.hp - _passive_dmg);
         effect_play_hurt(enemy_actor); alarm[0] = 90; current_state = BATTLE_STATE.PLAYER_TURN; break;
-        
-    // === HP DRAIN STATE ===
+
     case BATTLE_STATE.WAIT_FOR_HP_DRAIN:
         var _p_diff = abs(player_visual_hp - player_critter_data.hp);
         var _e_diff = abs(enemy_visual_hp - enemy_critter_data.hp);
         
-        var _p_speed = max(0.2, _p_diff / 15); // Slower drain
+        var _p_speed = max(0.2, _p_diff / 15);
         var _e_speed = max(0.2, _e_diff / 15);
-        
+
         if (player_visual_hp > player_critter_data.hp) player_visual_hp = max(player_critter_data.hp, player_visual_hp - _p_speed);
         else if (player_visual_hp < player_critter_data.hp) player_visual_hp = min(player_critter_data.hp, player_visual_hp + _p_speed);
-        
         if (enemy_visual_hp > enemy_critter_data.hp) enemy_visual_hp = max(enemy_critter_data.hp, enemy_visual_hp - _e_speed);
         else if (enemy_visual_hp < enemy_critter_data.hp) enemy_visual_hp = min(enemy_critter_data.hp, enemy_visual_hp + _e_speed);
-        
         if (abs(player_visual_hp - player_critter_data.hp) < 0.5 && abs(enemy_visual_hp - enemy_critter_data.hp) < 0.5) {
             player_visual_hp = player_critter_data.hp;
             enemy_visual_hp = enemy_critter_data.hp;
             current_state = next_state_after_drain;
             alarm[0] = 120;
+        }
+        break;
+        
+    // ================== NEW: LOSE STATE LOGIC ==================
+    case BATTLE_STATE.LOSE:
+        // [UPDATED] Now shows specific critter name
+        battle_log_text = "You have lost the battle!";
+        
+        if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
+            // Heal Team (Quality of Life fix so you aren't stuck)
+            for (var i = 0; i < array_length(global.PlayerData.team); i++) {
+                global.PlayerData.team[i].hp = global.PlayerData.team[i].max_hp;
+            }
+            
+            instance_destroy(player_actor);
+            instance_destroy(enemy_actor);
+            instance_destroy();
         }
         break;
 }
