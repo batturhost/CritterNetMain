@@ -16,6 +16,7 @@ if (browser_state == "browsing") {
     if (_click && !is_dragging) {
         if (btn_ranked_hover) {
             if (instance_exists(obj_battle_manager)) exit;
+
             if (global.PlayerData.current_opponent_index >= array_length(current_cup.opponents)) {
                 heal_message_text = "You've beaten everyone in this cup!";
                 heal_message_timer = 120;
@@ -27,10 +28,14 @@ if (browser_state == "browsing") {
         
         if (btn_casual_hover) {
             if (instance_exists(obj_battle_manager)) exit;
+
             var _cup = global.CupDatabase[global.PlayerData.current_cup_index];
             var _battle_data = { is_casual: true, opponent_data: noone, level_cap: _cup.level_cap };
-            instance_create_layer(0, 0, "Instances", obj_battle_manager, _battle_data);
-            instance_destroy();
+            
+            // [FIX] Force Battle Window to the front (Depth Adjustment)
+            var _new_battle = instance_create_layer(0, 0, "Instances", obj_battle_manager, _battle_data);
+            global.top_window_depth--;
+            _new_battle.depth = global.top_window_depth;
         }
         
         if (btn_heal_hover) {
@@ -58,8 +63,14 @@ else if (browser_state == "match_found") {
     if (match_display_timer <= 0) {
         var _opp_data = current_cup.opponents[global.PlayerData.current_opponent_index];
         var _battle_data = { is_casual: false, opponent_data: _opp_data, level_cap: current_level_cap };
-        instance_create_layer(0, 0, "Instances", obj_battle_manager, _battle_data);
-        instance_destroy();
+        
+        // [FIX] Force Battle Window to the front (Depth Adjustment)
+        var _new_battle = instance_create_layer(0, 0, "Instances", obj_battle_manager, _battle_data);
+        global.top_window_depth--;
+        _new_battle.depth = global.top_window_depth;
+        
+        // Reset to "browsing" so it's ready when you return
+        browser_state = "browsing"; 
     }
 }
 
@@ -68,6 +79,7 @@ sidebar_x1 = window_x1 + 2;
 sidebar_y1 = window_y1 + 32;
 sidebar_x2 = sidebar_x1 + sidebar_w;
 sidebar_y2 = window_y2 - 2;
+
 content_x1 = sidebar_x2;
 content_y1 = sidebar_y1;
 content_x2 = window_x2 - 2;
