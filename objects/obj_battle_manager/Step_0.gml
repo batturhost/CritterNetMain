@@ -53,8 +53,7 @@ btn_main_menu = [
     [_btn_base_x + _btn_w + _btn_gutter, _btn_base_y + _btn_h + _btn_gutter, _btn_base_x + _btn_w * 2 + _btn_gutter, _btn_base_y + _btn_h * 2 + _btn_gutter, "RUN"]
 ];
 
-// --- [FIX] CENTERED TEAM LAYOUT ---
-// Centering these buttons ensures clicks don't land "outside" the window and trigger the browser.
+// Team Layout (Centered)
 btn_team_layout = [];
 var _team_btn_w = 360; 
 var _team_btn_h = 100; 
@@ -71,11 +70,9 @@ for (var i = 0; i < 3; i++) {
         array_push(btn_team_layout, [_x1, _y1, _x1 + _team_btn_w, _y1 + _team_btn_h]);
     } 
 }
-// Cancel Button
 var _cancel_x = window_x2 - 120 - 30; 
 var _cancel_y = window_y2 - 40 - 20;
 array_push(btn_team_layout, [_cancel_x, _cancel_y, _cancel_x + 120, _cancel_y + 40]);
-// ---------------------------------
 
 // Download Bar
 download_bar_x1 = window_x1 + (window_width / 2) - (download_bar_w / 2);
@@ -240,8 +237,7 @@ switch (current_state) {
                         else { 
                             swap_target_index = menu_focus;
                             
-                            // [FIX 2] DETERMINE IF TURN ENDS
-                            // If it wasn't forced (voluntary swap), the turn ends.
+                            // Determine if this swap counts as a turn
                             swap_ends_turn = !is_force_swapping; 
                             
                             current_state = BATTLE_STATE.PLAYER_SWAP_OUT; 
@@ -315,16 +311,19 @@ switch (current_state) {
     case BATTLE_STATE.WIN_DOWNLOAD_COMPLETE: break;
 
     case BATTLE_STATE.WIN_COIN_WAIT:
+        // Do nothing. Wait for Alarm 0.
         break;
 
-    // --- [FIX 1] DUPLICATION BUG FIXED ---
     case BATTLE_STATE.WIN_END:
         if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
-            // REMOVED the logic that overwrote team[0].
+            
             if (is_casual == false) { 
                 global.PlayerData.current_opponent_index++; 
             } 
-            instance_destroy(player_actor); instance_destroy(enemy_actor); instance_destroy();
+            
+            instance_destroy(player_actor); 
+            instance_destroy(enemy_actor); 
+            instance_destroy();
         }
         break;
 
@@ -362,9 +361,11 @@ switch (current_state) {
     case BATTLE_STATE.LOSE:
         battle_log_text = player_critter_data.nickname + " fainted! You have lost the battle!";
         if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_enter)) {
+            // Heal Team
             for (var i = 0; i < array_length(global.PlayerData.team); i++) {
                 global.PlayerData.team[i].hp = global.PlayerData.team[i].max_hp;
             }
+            
             instance_destroy(player_actor);
             instance_destroy(enemy_actor);
             instance_destroy();
@@ -372,21 +373,29 @@ switch (current_state) {
         break;
 }
 
+// ================== WEATHER ANIMATION LOGIC ==================
+// [FIX] Use final_w/h to ignore window-opening animation clamping
+var _sim_w = variable_instance_exists(id, "final_w") && final_w > 0 ? final_w : 800;
+var _sim_h = variable_instance_exists(id, "final_h") && final_h > 0 ? final_h : 600;
+
 // 1. Update Rain/Storm
 if (global.weather_condition == "RAIN" || global.weather_condition == "STORM") {
     if (global.weather_condition == "STORM") {
         if (weather_flash_alpha > 0) weather_flash_alpha -= 0.05;
         if (irandom(200) == 0) weather_flash_alpha = 0.8;
     }
+
     for (var i = 0; i < array_length(weather_particles); i++) {
         var _p = weather_particles[i];
         _p.y += _p.speed;
+        
         if (global.weather_condition == "STORM") _p.x -= 2;
-        if (_p.y > window_height) {
+        
+        if (_p.y > _sim_h) {
             _p.y = -_p.length;
-            _p.x = irandom(window_width);
+            _p.x = irandom(_sim_w); // [FIX] Use target width
         }
-        if (_p.x < 0) _p.x = window_width;
+        if (_p.x < 0) _p.x = _sim_w;
     }
 }
 
@@ -397,9 +406,10 @@ if (global.weather_condition == "SUN") {
         var _p = weather_particles[i];
         _p.y += _p.speed_y;
         _p.x += _p.speed_x;
-        if (_p.y < 0) _p.y = window_height;
-        if (_p.x > window_width) _p.x = 0;
-        if (_p.x < 0) _p.x = window_width;
+        
+        if (_p.y < 0) _p.y = _sim_h;
+        if (_p.x > _sim_w) _p.x = 0;
+        if (_p.x < 0) _p.x = _sim_w;
     }
 }
 
@@ -409,9 +419,10 @@ if (global.weather_condition == "SNOW") {
         var _p = weather_particles[i];
         _p.y += _p.speed;
         _p.x += sin((current_time / 500) + _p.sway_offset) * 0.5;
-        if (_p.y > window_height) {
+        
+        if (_p.y > _sim_h) {
             _p.y = -5;
-            _p.x = irandom(window_width);
+            _p.x = irandom(_sim_w); // [FIX] Use target width
         }
     }
 }
