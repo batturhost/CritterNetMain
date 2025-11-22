@@ -64,7 +64,7 @@
     {"name":"spr_capybara_idle_back","order":15,"path":"sprites/spr_capybara_idle_back/spr_capybara_idle_back.yy",},
     {"name":"spr_capybara_idle","order":14,"path":"sprites/spr_capybara_idle/spr_capybara_idle.yy",},
     {"name":"spr_cat_idle_back","order":17,"path":"sprites/spr_cat_idle_back/spr_cat_idle_back.yy",},
-    {"name":"spr_cat_idle","order":16,"path":"sprites/spr_cat_idle/spr_cat_idle.yy",},
+    {"name":"spr_cat_idle","order":67,"path":"sprites/spr_cat_idle/spr_cat_idle.yy",},
     {"name":"spr_chinchilla_idle_back","order":19,"path":"sprites/spr_chinchilla_idle_back/spr_chinchilla_idle_back.yy",},
     {"name":"spr_chinchilla_idle","order":18,"path":"sprites/spr_chinchilla_idle/spr_chinchilla_idle.yy",},
     {"name":"spr_desert_rain_frog_idle_back","order":21,"path":"sprites/spr_desert_rain_frog_idle_back/spr_desert_rain_frog_idle_back.yy",},
