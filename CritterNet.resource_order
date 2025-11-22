@@ -86,7 +86,7 @@
     {"name":"spr_koala_idle","order":35,"path":"sprites/spr_koala_idle/spr_koala_idle.yy",},
     {"name":"spr_logo","order":37,"path":"sprites/spr_logo/spr_logo.yy",},
     {"name":"spr_meerkat_idle_back","order":39,"path":"sprites/spr_meerkat_idle_back/spr_meerkat_idle_back.yy",},
-    {"name":"spr_meerkat_idle","order":38,"path":"sprites/spr_meerkat_idle/spr_meerkat_idle.yy",},
+    {"name":"spr_meerkat_idle","order":66,"path":"sprites/spr_meerkat_idle/spr_meerkat_idle.yy",},
     {"name":"spr_otter_idle_back","order":41,"path":"sprites/spr_otter_idle_back/spr_otter_idle_back.yy",},
     {"name":"spr_otter_idle","order":40,"path":"sprites/spr_otter_idle/spr_otter_idle.yy",},
     {"name":"spr_panda_idle_back","order":43,"path":"sprites/spr_panda_idle_back/spr_panda_idle_back.yy",},

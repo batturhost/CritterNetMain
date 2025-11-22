@@ -18,7 +18,6 @@ if (mouse_check_button_released(mb_left)) {
 if (is_dragging) {
     window_x1 = _mx + drag_dx;
     window_y1 = _my + drag_dy;
-
     // Recalculate positions
     window_x2 = window_x1 + window_width;
     window_y2 = window_y1 + window_height;
@@ -60,7 +59,7 @@ if (_click) {
     
     // --- START BATTLE ---
     if (btn_fight_hover) {
-        // [FIX] Check if battle already exists to prevent stacking
+        // Check if battle already exists to prevent stacking
         if (instance_exists(obj_battle_manager)) exit;
 
         // 1. Set Player Critter (Slot 0)
@@ -73,9 +72,8 @@ if (_click) {
             50, // Level 50 for testing
             _p_data.sprite_idle, _p_data.sprite_idle_back, _p_data.sprite_signature_move,
             _p_data.moves, _p_data.blurb, _p_data.size,
-            _p_data.element_type // <--- ADDED THIS ARGUMENT TO FIX TYPE MATCHUP
+            _p_data.element_type 
         );
-
         _new_p.nickname = "Debug " + _p_data.animal_name;
         recalculate_stats(_new_p);
         
@@ -89,12 +87,15 @@ if (_click) {
         
         var _opp_data = {
             name: "Debug Opponent",
-            profile_pic_sprite: spr_1, // [FIX] Updated to use new sprite system (was spr_avatar_user_default)
+            profile_pic_sprite: spr_1,
             critter_keys: [ _e_key ],
             critter_levels: [ 50 ], // Level 50 for testing
             lose_message: "Debug match ended.",
             is_glitched: false
         };
+
+        // [FIX] Force weather to RAIN since Browser isn't open
+        global.weather_condition = "RAIN";
 
         // 3. Launch Battle
         instance_create_layer(0, 0, "Instances", obj_battle_manager, {
@@ -102,8 +103,6 @@ if (_click) {
             opponent_data: _opp_data,
             level_cap: 100
         });
-
-        // [FIX] REMOVED instance_destroy() so the window stays open
     }
     
     // --- LIST SELECTION ---

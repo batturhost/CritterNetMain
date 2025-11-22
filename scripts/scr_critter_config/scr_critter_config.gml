@@ -7,7 +7,7 @@ function get_critter_scale_config(_animal_name, _is_player) {
         
         // --- BIG CRITTERS (Scale Down) ---
         case "Capybara":
-            if (_is_player) return 0.8; // Back Sprite scale
+            if (_is_player) return 0.7; // Back Sprite scale
             else return 0.8;            // Front Sprite scale
             
         case "Pomeranian":
@@ -25,6 +25,21 @@ function get_critter_scale_config(_animal_name, _is_player) {
 		case "Axolotl":
 			if (_is_player) return 0.7;
 			else return 1.0;
+		case "Desert Rain Frog":
+			if (_is_player) return 1.0;
+			else return 0.8;
+		case "Meerkat":
+			if (_is_player) return 0.4;
+			else return 0.7;
+		case "Otter":
+			if (_is_player) return 0.8;
+			else return 1.0;
+		case "Penguin":
+			if (_is_player) return 1.0;
+			else return 0.7;
+		case "Snub-Nosed Monkey":
+			if (_is_player) return 1.0;
+			else return 0.7;
         
         // Example of differing scales:
         // case "Dragon": 
