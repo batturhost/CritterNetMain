@@ -34,7 +34,7 @@ if (_key_enter || mouse_check_button_pressed(mb_left)) {
             nickname = species_name; // Default back to species name if empty
         }
         global.PlayerData.starter_nickname = nickname;
-        
+
         // ================== ADD STARTER TO TEAM (FIXED) ==================
         
         // 1. Create the starter critter's data
@@ -42,14 +42,16 @@ if (_key_enter || mouse_check_button_pressed(mb_left)) {
         var _data = global.bestiary[$ _starter_key];
         var _level = 5;
 
+        // [FIX] Added _data.element_type as the final argument
         var _starter_critter = new AnimalData(
             _data.animal_name,
             _data.base_hp, _data.base_atk, _data.base_def, _data.base_spd,
             _level,
             _data.sprite_idle, _data.sprite_idle_back, _data.sprite_signature_move,
-            _data.moves, _data.blurb, _data.size
+            _data.moves, _data.blurb, _data.size,
+            _data.element_type 
         );
-        
+
         // 2. Set its nickname, gender, and calculate stats
         _starter_critter.nickname = nickname;
         _starter_critter.gender = critter_gender; 
@@ -57,10 +59,9 @@ if (_key_enter || mouse_check_button_pressed(mb_left)) {
         
         // 3. Add this new critter to the player's team
         array_push(global.PlayerData.team, _starter_critter);
-        
         // ================== END OF NEW CODE ========================
         
-        // [CHANGE] Go to Profile Selection instead of Hub
+        // Go to Profile Selection
         room_goto(rm_profile_select);
     }
 }
