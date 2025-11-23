@@ -84,7 +84,16 @@ function effect_play_water(_a) {
         audio_sound_pitch(_snd, _pitch);
     }
 }
-function effect_play_zen(_a) { _effect_start(_a, "zen", 60);
+function effect_play_zen(_a) { 
+    _effect_start(_a, "zen", 60); 
+    
+    // [SOUND] Play Zen Chime
+    if (audio_exists(snd_zen_meditate)) {
+        // Lower pitch slightly for a "deeper" meditation feel
+        var _pitch = random_range(0.95, 1.0);
+        var _snd = audio_play_sound(snd_zen_meditate, 10, false);
+        audio_sound_pitch(_snd, _pitch);
+    }
 }
 function effect_play_soundwave(_a) { _effect_start(_a, "soundwave", 60); }
 function effect_play_feathers(_a) { _effect_start(_a, "feathers", 45); }

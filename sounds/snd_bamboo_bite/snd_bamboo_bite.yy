@@ -1,6 +1,6 @@
 {
   "$GMSound":"v2",
-  "%Name":"snd_water",
+  "%Name":"snd_bamboo_bite",
   "audioGroupId":{
     "name":"audiogroup_default",
     "path":"audiogroups/audiogroup_default",
@@ -12,7 +12,7 @@
   "conversionMode":0,
   "duration":1.0,
   "exportDir":"",
-  "name":"snd_water",
+  "name":"snd_bamboo_bite",
   "parent":{
     "name":"Sounds",
     "path":"folders/Sounds.yy",
@@ -21,6 +21,6 @@
   "resourceType":"GMSound",
   "resourceVersion":"2.0",
   "sampleRate":44100,
-  "soundFile":"snd_water.wav",
-  "volume":0.87,
+  "soundFile":"snd_bamboo_bite.wav",
+  "volume":1.0,
 }
