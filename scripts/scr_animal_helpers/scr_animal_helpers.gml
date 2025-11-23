@@ -12,6 +12,14 @@ function effect_play_hurt(_actor_object) {
     _actor_object.flash_alpha = 1.0; 
     _actor_object.flash_color = c_white; 
     _actor_object.shake_timer = 15; 
+	
+	// [SOUND] Play generic damage sound
+    // We use a random pitch (0.9 to 1.1) so it doesn't sound robotic on multi-hits
+    if (audio_exists(snd_damage_default)) {
+        var _pitch = random_range(0.8, 1.2);
+        var _snd = audio_play_sound(snd_damage_default, 10, false);
+        audio_sound_pitch(_snd, _pitch);
+    }
 }
 // --------------------------------------------------
 
