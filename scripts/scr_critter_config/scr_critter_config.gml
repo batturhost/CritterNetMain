@@ -55,22 +55,16 @@ function get_critter_scale_config(_animal_name, _is_player) {
 function get_critter_anim_style(_animal_name, _is_player) {
     switch (_animal_name) {
         
-        // --- SPECIAL CASE: CAT ---
-        //case "Cat":
-            // "atm I only want the cat front sprite to do the ping pong"
-            // If it is NOT the player (meaning it is the Enemy/Front), use PINGPONG.
-          //  if (!_is_player) return "PINGPONG";
-         //   return "LOOP"; // Back sprite loops
-            
-        // --- OTHER PING-PONG ANIMALS (Optional) ---
-        // You can add more here later if you want
-        // case "Capybara": return "PINGPONG";
-		case "Cat": return "PINGPONG";
-		case "Capybara": return "PINGPONG";
-		case "Seagull": return "PINGPONG";
+        // --- EXCEPTIONS (Looping) ---
+        // Add animals here that you want to use the standard LOOP cycle
+        // case "SomeLoopingAnimal": return "LOOP";
+        
+        // Example: If you decided you want the Rabbit to loop:
+        // case "Rabbit": return "LOOP";
 
-        // --- DEFAULT (Looping) ---
+        // --- DEFAULT (Ping Pong) ---
+        // All other animals will now default to PINGPONG
         default: 
-            return "LOOP";
+            return "PINGPONG";
     }
 }
