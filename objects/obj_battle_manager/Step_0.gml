@@ -310,19 +310,35 @@ switch (current_state) {
     
     case BATTLE_STATE.PLAYER_SWAP_IN: break;
 
-    case BATTLE_STATE.WIN_DOWNLOAD_PROGRESS:
+   case BATTLE_STATE.WIN_DOWNLOAD_PROGRESS:
         if (download_current_percent < download_end_percent) { 
             download_current_percent += 0.25;
         } 
         else {
+            // Download Finished
             download_current_percent = download_end_percent;
-            current_state = BATTLE_STATE.WIN_DOWNLOAD_COMPLETE; alarm[0] = 120; 
+            current_state = BATTLE_STATE.WIN_DOWNLOAD_COMPLETE; 
+            alarm[0] = 120; 
+            
+            // [SOUND] Play download complete sound once
+            audio_play_sound(snd_ui_download, 10, false);
+
             if (download_current_percent >= 100) {
                 var _key = current_opponent_data.critter_keys[0];
-                var _data = global.bestiary[$ _key]; var _level = enemy_critter_data.level;
-                var _new_critter = new AnimalData(_data.animal_name, _data.base_hp, _data.base_atk, _data.base_def, _data.base_spd, _level, _data.sprite_idle, _data.sprite_idle_back, _data.sprite_signature_move, _data.moves, _data.blurb, _data.size);
-                _new_critter.nickname = _data.animal_name; _new_critter.gender = irandom(1); recalculate_stats(_new_critter);
-                array_push(global.PlayerData.pc_box, _new_critter); global.PlayerData.collection_progress[$ _key] = 0;
+                var _data = global.bestiary[$ _key]; 
+                var _level = enemy_critter_data.level;
+                
+                var _new_critter = new AnimalData(_data.animal_name, _data.base_hp, _data.base_atk, _data.base_def, _data.base_spd, _level, _data.sprite_idle, _data.sprite_idle_back, _data.sprite_signature_move, _data.moves, _data.blurb, _data.size, _data.element_type);
+                _new_critter.nickname = _data.animal_name; 
+                _new_critter.gender = irandom(1); 
+                recalculate_stats(_new_critter);
+                
+                array_push(global.PlayerData.pc_box, _new_critter); 
+                
+                // Mark as collected if tracking collection
+                if (variable_struct_exists(global.PlayerData, "collection_progress")) {
+                    global.PlayerData.collection_progress[$ _key] = 1;
+                }
             }
         }
         break;

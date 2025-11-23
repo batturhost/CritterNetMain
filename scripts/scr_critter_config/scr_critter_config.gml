@@ -7,7 +7,7 @@ function get_critter_scale_config(_animal_name, _is_player) {
         
         // --- BIG CRITTERS (Scale Down) ---
         case "Capybara":
-            if (_is_player) return 0.7; // Back Sprite scale
+            if (_is_player) return 0.6; // Back Sprite scale
             else return 0.8;            // Front Sprite scale
             
         case "Pomeranian":
