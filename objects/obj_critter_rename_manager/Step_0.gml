@@ -25,7 +25,7 @@ if (keyboard_check_pressed(vk_backspace)) {
 
 // --- 3. Handle Submit ---
 if (_key_enter || mouse_check_button_pressed(mb_left)) {
-    
+	play_ui_click(); 
     // We are now calling the GLOBAL 'point_in_box' function
     if (point_in_box(_mx, _my, btn_ok_x1, btn_ok_y1, btn_ok_x2, btn_ok_y2) || _key_enter)
     {

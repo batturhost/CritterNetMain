@@ -29,6 +29,7 @@ switch (download_state) {
         btn_submit_hover = point_in_box(_mx, _my, btn_submit_x1, btn_submit_y1, btn_submit_x2, btn_submit_y2);
         
         if (_click && btn_submit_hover) {
+			play_ui_click();
             room_goto(rm_critter_rename);
         }
         break;

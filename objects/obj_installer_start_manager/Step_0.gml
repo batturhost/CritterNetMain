@@ -10,6 +10,7 @@ if (start_delay > 0) {
 else {
     // 3. Check for Enter Key (Instead of Click)
     if (keyboard_check_pressed(vk_enter)) {
+		play_ui_click();
         room_goto(rm_sign_up);
     }
 }

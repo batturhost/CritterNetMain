@@ -75,6 +75,7 @@ if (!is_dragging) {
     if (_click) {
         if (btn_ok_hover) {
             // SAVE & FINISH
+			play_ui_click();
             global.PlayerData.profile_pic = avatar_list[selected_index];
             room_goto(rm_hub);
         }

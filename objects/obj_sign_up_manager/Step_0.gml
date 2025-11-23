@@ -124,7 +124,7 @@ switch (current_focus) {
                 recalculate_stats(_critter);
                 array_push(global.PlayerData.pc_box, _critter);
             }
-            
+            play_ui_click();
             room_goto(rm_critter_confirm); 
         }
         break;

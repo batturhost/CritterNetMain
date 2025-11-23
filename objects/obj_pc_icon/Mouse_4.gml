@@ -18,7 +18,9 @@ if (instance_exists(obj_battle_manager)) {
 
 // 2. Only open if NOT blocked
 if (!_blocked_by_window) {
+	play_ui_click();
     if (!instance_exists(obj_pc_manager)) {
         instance_create_layer(0, 0, "Instances", obj_pc_manager);
     }
 }
+

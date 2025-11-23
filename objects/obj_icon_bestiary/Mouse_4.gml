@@ -16,6 +16,7 @@ with (obj_window_parent) {
 
 // 2. Only open the app if we are NOT blocked
 if (!_blocked_by_window) {
+	play_ui_click();
     if (!instance_exists(obj_pokedex_manager)) {
         instance_create_layer(0, 0, "Instances", obj_pokedex_manager);
     }

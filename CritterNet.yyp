@@ -11,6 +11,7 @@
   "defaultScriptType":1,
   "Folders":[
     {"$GMFolder":"","%Name":"Fonts","folderPath":"folders/Fonts.yy","name":"Fonts","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Sounds","folderPath":"folders/Sounds.yy","name":"Sounds","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Objects","folderPath":"folders/Objects.yy","name":"Objects","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Scripts","folderPath":"folders/Scripts.yy","name":"Scripts","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -68,8 +69,10 @@
     {"id":{"name":"scr_critter_config","path":"scripts/scr_critter_config/scr_critter_config.yy",},},
     {"id":{"name":"scr_cup_database","path":"scripts/scr_cup_database/scr_cup_database.yy",},},
     {"id":{"name":"scr_draw_helpers","path":"scripts/scr_draw_helpers/scr_draw_helpers.yy",},},
+    {"id":{"name":"scr_interaction_helpers","path":"scripts/scr_interaction_helpers/scr_interaction_helpers.yy",},},
     {"id":{"name":"scr_level_helpers","path":"scripts/scr_level_helpers/scr_level_helpers.yy",},},
     {"id":{"name":"scr_save_system","path":"scripts/scr_save_system/scr_save_system.yy",},},
+    {"id":{"name":"snd_ui_click","path":"sounds/snd_ui_click/snd_ui_click.yy",},},
     {"id":{"name":"spr_1","path":"sprites/spr_1/spr_1.yy",},},
     {"id":{"name":"spr_2","path":"sprites/spr_2/spr_2.yy",},},
     {"id":{"name":"spr_3","path":"sprites/spr_3/spr_3.yy",},},
