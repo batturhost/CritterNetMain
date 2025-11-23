@@ -122,8 +122,23 @@ if (is_dragging) _click = false;
 switch (current_state) {
     case BATTLE_STATE.START:
         battle_log_text = current_opponent_data.name + " sent out " + enemy_critter_data.nickname + "!";
+        
+        // [SOUND] Play Enemy Cry
+        play_critter_cry(enemy_critter_data);
+        
         alarm[0] = 120;
         current_state = BATTLE_STATE.WAIT_FOR_START;
+        break;
+
+    // --- NEW CASE: PLAYER SENDS OUT CRITTER ---
+    case BATTLE_STATE.INTRO_PLAYER:
+        battle_log_text = "Go! " + player_critter_data.nickname + "!";
+        
+        // [SOUND] Play Player Cry
+        play_critter_cry(player_critter_data);
+        
+        alarm[0] = 60; // Short delay before menu appears
+        current_state = BATTLE_STATE.WAIT_FOR_PLAYER_INTRO;
         break;
 
     case BATTLE_STATE.PLAYER_TURN:

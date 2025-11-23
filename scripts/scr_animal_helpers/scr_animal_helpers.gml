@@ -70,7 +70,7 @@ function effect_play_sleep(_a) {
     
     // [SOUND] Play Sleep Sound
     if (audio_exists(snd_sleep)) {
-        audio_play_sound(snd_status_sleep, 10, false);
+        audio_play_sound(snd_sleep, 10, false);
     }
 }
 function effect_play_water(_a) { 
@@ -80,7 +80,7 @@ function effect_play_water(_a) {
     if (audio_exists(snd_water)) {
         // Randomize pitch slightly for liquid variance
         var _pitch = random_range(0.9, 1.1);
-        var _snd = audio_play_sound(snd_water_splash, 10, false);
+        var _snd = audio_play_sound(snd_water, 10, false);
         audio_sound_pitch(_snd, _pitch);
     }
 }
@@ -122,3 +122,27 @@ function effect_play_dust(_a) { effect_play_puff(_a); }
 function effect_play_poison(_a) { effect_play_bite(_a);
     _a.flash_color = c_purple; }
 function effect_play_coil(_a) { _a.flash_alpha=1.0; _a.flash_color = c_yellow; }
+
+
+/// @function play_critter_cry(_animal_data)
+/// @desc Plays the cry sound for the given animal struct if the sound exists.
+function play_critter_cry(_animal_data) {
+    if (!is_struct(_animal_data)) return;
+    
+    // 1. Convert name to snake_case format (e.g., "Arctic Fox" -> "arctic_fox")
+    var _name = string_lower(_animal_data.animal_name);
+    _name = string_replace_all(_name, " ", "_");
+    _name = string_replace_all(_name, "-", "_"); // Handle "Snub-Nosed"
+    
+    // 2. Construct the expected asset name
+    var _sound_name = "snd_cry_" + _name;
+    
+    // 3. Find and play
+    var _snd = asset_get_index(_sound_name);
+    if (_snd > -1) {
+        audio_play_sound(_snd, 10, false);
+    } else {
+        // Optional: Play a generic fallback if specific cry is missing
+        // if (audio_exists(snd_cry_generic)) audio_play_sound(snd_cry_generic, 10, false);
+    }
+}

@@ -1,12 +1,21 @@
 // --- Alarm 0: Battle State Timer ---
 
 switch (current_state) {
+    
+    // --- STARTUP SEQUENCE ---
     case BATTLE_STATE.WAIT_FOR_START:
+        // [CHANGE] Go to Player Intro instead of straight to Turn
+        current_state = BATTLE_STATE.INTRO_PLAYER;
+        break;
+
+    // [NEW] Handle the delay after Player sends out critter
+    case BATTLE_STATE.WAIT_FOR_PLAYER_INTRO:
         current_state = BATTLE_STATE.PLAYER_TURN;
         current_menu = MENU.MAIN;
         menu_focus = 0;
         break;
-        
+
+    // --- STANDARD BATTLE LOOP ---
     case BATTLE_STATE.WAIT_FOR_PLAYER_MOVE:
         if (enemy_critter_data.hp <= 0) {
             current_state = BATTLE_STATE.ENEMY_FAINT;
@@ -22,7 +31,7 @@ switch (current_state) {
             }
         }
         break;
-
+        
     case BATTLE_STATE.WAIT_FOR_ENEMY_MOVE:
         if (player_critter_data.hp <= 0) {
             current_state = BATTLE_STATE.PLAYER_FAINT;
@@ -37,7 +46,7 @@ switch (current_state) {
             }
         }
         break;
-
+        
     case BATTLE_STATE.WAIT_FOR_FAINT:
         if (enemy_critter_data.hp <= 0) {
             if (is_casual) {
@@ -63,13 +72,14 @@ switch (current_state) {
         }
         break;
 
+    // --- SWAP LOGIC ---
     case BATTLE_STATE.PLAYER_SWAP_IN:
         var _new_critter = global.PlayerData.team[swap_target_index];
         instance_destroy(player_actor);
         
         player_critter_data = _new_critter;
         player_visual_hp = player_critter_data.hp;
-
+        
         var _btn_w = 175; var _btn_h = 30;
         var _btn_gutter = 10;
         var _log_y1 = window_y1 + (window_height * 0.8);
@@ -82,7 +92,7 @@ switch (current_state) {
             [_btn_base_x, _btn_base_y + _btn_h + _btn_gutter, _btn_base_x + _btn_w, _btn_base_y + _btn_h * 2 + _btn_gutter, player_critter_data.moves[2].move_name],
             [_btn_base_x + _btn_w + _btn_gutter, _btn_base_y + _btn_h + _btn_gutter, _btn_base_x + _btn_w * 2 + _btn_gutter, _btn_base_y + _btn_h * 2 + _btn_gutter, "BACK"]
         ];
-
+        
         var _layer_id = layer_get_id("Instances");
         var _px = window_x1 + (window_width * 0.3);
         var _py = window_y1 + (window_height * 0.7);
@@ -94,8 +104,10 @@ switch (current_state) {
         
         battle_log_text = "Go! " + player_critter_data.nickname + "!";
         
-        // [FIX 3] END TURN IF VOLUNTARY SWAP
-        // If swap_ends_turn is true, the player loses their turn and the enemy attacks.
+        // [SOUND] Play Cry on Swap
+        play_critter_cry(player_critter_data);
+        
+        // Check if swap ends turn
         if (variable_instance_exists(id, "swap_ends_turn") && swap_ends_turn) {
              current_state = BATTLE_STATE.ENEMY_TURN;
         } else {
@@ -103,12 +115,13 @@ switch (current_state) {
         }
         current_menu = MENU.MAIN;
         break;
-        
+
+    // --- WIN SEQUENCE ---
     case BATTLE_STATE.WIN_DOWNLOAD_COMPLETE:
         current_state = BATTLE_STATE.WIN_XP_GAIN;
         alarm[0] = 60;
         break;
-
+        
     case BATTLE_STATE.WIN_XP_GAIN:
         var _b_hp = enemy_critter_data.base_hp;
         var _b_atk = enemy_critter_data.base_atk;
@@ -138,7 +151,7 @@ switch (current_state) {
             alarm[0] = 10;
         }
         break;
-
+        
     case BATTLE_STATE.WIN_LEVEL_UP_MSG:
         if (player_critter_data.level < 100 && player_critter_data.xp >= player_critter_data.next_level_xp) {
             current_state = BATTLE_STATE.WIN_CHECK_LEVEL;
@@ -148,7 +161,7 @@ switch (current_state) {
             alarm[0] = 30;
         }
         break;
-
+        
     case BATTLE_STATE.WIN_COIN_GAIN:
         var _coin_base = enemy_critter_data.level;
         var _coin_mult = is_casual ? 5 : 20;
@@ -159,16 +172,16 @@ switch (current_state) {
         current_state = BATTLE_STATE.WIN_COIN_WAIT;
         alarm[0] = 120; 
         break;
-
+        
     case BATTLE_STATE.WIN_COIN_WAIT:
         battle_log_text = "You won the battle! Click to continue.";
         current_state = BATTLE_STATE.WIN_END;
         break;
         
+    // --- END TURN EFFECTS ---
     case BATTLE_STATE.PLAYER_POST_TURN_DAMAGE:
          current_state = BATTLE_STATE.ENEMY_TURN;
          break;
-
     case BATTLE_STATE.ENEMY_POST_TURN_DAMAGE:
          current_state = BATTLE_STATE.PLAYER_TURN;
          break;

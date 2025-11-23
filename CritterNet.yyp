@@ -72,6 +72,7 @@
     {"id":{"name":"scr_interaction_helpers","path":"scripts/scr_interaction_helpers/scr_interaction_helpers.yy",},},
     {"id":{"name":"scr_level_helpers","path":"scripts/scr_level_helpers/scr_level_helpers.yy",},},
     {"id":{"name":"scr_save_system","path":"scripts/scr_save_system/scr_save_system.yy",},},
+    {"id":{"name":"snd_cry_arctic_fox","path":"sounds/snd_cry_arctic_fox/snd_cry_arctic_fox.yy",},},
     {"id":{"name":"snd_damage_default","path":"sounds/snd_damage_default/snd_damage_default.yy",},},
     {"id":{"name":"snd_ice_pounce","path":"sounds/snd_ice_pounce/snd_ice_pounce.yy",},},
     {"id":{"name":"snd_sleep","path":"sounds/snd_sleep/snd_sleep.yy",},},
