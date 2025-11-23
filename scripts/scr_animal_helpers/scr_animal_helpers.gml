@@ -51,11 +51,39 @@ function _effect_start(_a, _type, _time) { _a.vfx_type = _type; _a.vfx_particles
     _a.vfx_timer = _time; }
 
 // --- VFX DEFINITIONS ---
-function effect_play_ice(_a) { _effect_start(_a, "ice", 45); }
-function effect_play_snow(_a) { _effect_start(_a, "snow", 90);
+function effect_play_ice(_a) { 
+    _effect_start(_a, "ice", 45); 
+    // [SOUND] Ice Pounce
+    if (audio_exists(snd_ice_pounce)) {
+        audio_play_sound(snd_ice_pounce, 10, false);
+    }
 }
-function effect_play_sleep(_a) { _effect_start(_a, "sleep", 60); }
-function effect_play_water(_a) { _effect_start(_a, "water", 45); }
+function effect_play_snow(_a) { 
+    _effect_start(_a, "snow", 90); 
+    // [SOUND] Snow Cloak
+    if (audio_exists(snd_snow_cloak)) {
+        audio_play_sound(snd_snow_cloak, 10, false);
+    }
+}
+function effect_play_sleep(_a) { 
+    _effect_start(_a, "sleep", 60); 
+    
+    // [SOUND] Play Sleep Sound
+    if (audio_exists(snd_sleep)) {
+        audio_play_sound(snd_status_sleep, 10, false);
+    }
+}
+function effect_play_water(_a) { 
+    _effect_start(_a, "water", 45); 
+    
+    // [SOUND] Play Water Splash
+    if (audio_exists(snd_water)) {
+        // Randomize pitch slightly for liquid variance
+        var _pitch = random_range(0.9, 1.1);
+        var _snd = audio_play_sound(snd_water_splash, 10, false);
+        audio_sound_pitch(_snd, _pitch);
+    }
+}
 function effect_play_zen(_a) { _effect_start(_a, "zen", 60);
 }
 function effect_play_soundwave(_a) { _effect_start(_a, "soundwave", 60); }
