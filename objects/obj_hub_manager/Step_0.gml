@@ -73,6 +73,7 @@ var _menu_x2 = _menu_x1 + menu_w;
 // 4. Handle Logic
 if (_start_clicked) {
     // Toggle menu
+	play_ui_click();
     start_menu_open = !start_menu_open;
 } 
 else if (start_menu_open) {
