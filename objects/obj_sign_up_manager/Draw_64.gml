@@ -19,6 +19,7 @@ draw_set_color(c_navy);
 draw_rectangle(window_x1 + 2, window_y1 + 2, window_x2 - 2, window_y1 + 32, false); 
 draw_set_color(c_white);
 draw_set_halign(fa_center);
+draw_set_font(fnt_vga_bold);
 draw_text(window_x1 + (window_width / 2), window_y1 + 12, "USER REGISTRATION - CritterNet v1.0");
 draw_set_halign(fa_left);
 draw_set_color(c_black); // Text color for the form

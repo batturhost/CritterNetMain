@@ -20,7 +20,7 @@ var _center_y = gui_h / 2;
 
 // --- 3. Draw Header (Above Logo) ---
 draw_set_color(c_white);
-draw_set_font(fnt_vga);
+draw_set_font(fnt_vga_bold);
 draw_text_transformed(_center_x, _center_y - 180, "Welcome to CritterNet Setup", 1.5, 1.5, 0);
 
 

@@ -19,8 +19,9 @@ draw_set_color(c_navy);
 draw_rectangle(window_x1 + 2, window_y1 + 2, window_x2 - 2, window_y1 + 32, false); 
 draw_set_color(c_white);
 draw_set_halign(fa_left);
+draw_set_font(fnt_vga_bold);
 draw_text(window_x1 + 10, window_y1 + 12, "File Acquisition");
-
+draw_set_font(fnt_vga);
 
 // --- 4. Draw Contents Based on State ---
 switch (download_state) {

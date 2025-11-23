@@ -1,6 +1,6 @@
 {
   "$GMSound":"v2",
-  "%Name":"snd_ui_chime",
+  "%Name":"snd_ui_enter",
   "audioGroupId":{
     "name":"audiogroup_default",
     "path":"audiogroups/audiogroup_default",
@@ -10,9 +10,9 @@
   "compression":0,
   "compressionQuality":4,
   "conversionMode":0,
-  "duration":4.96,
+  "duration":0.14473923,
   "exportDir":"",
-  "name":"snd_ui_chime",
+  "name":"snd_ui_enter",
   "parent":{
     "name":"Sounds",
     "path":"folders/Sounds.yy",
@@ -21,6 +21,6 @@
   "resourceType":"GMSound",
   "resourceVersion":"2.0",
   "sampleRate":44100,
-  "soundFile":"snd_ui_chime.mp3",
-  "volume":0.9,
+  "soundFile":"snd_ui_enter.mp3",
+  "volume":0.75,
 }

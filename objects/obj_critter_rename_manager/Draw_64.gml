@@ -22,11 +22,12 @@ draw_set_color(c_navy);
 draw_rectangle(window_x1 + 2, window_y1 + 2, window_x2 - 2, window_y1 + 32, false); // Taller title bar
 draw_set_color(c_white);
 draw_set_halign(fa_center);
+draw_set_font(fnt_vga_bold);
 // Note: This window is "Edit Properties", distinct from "File Acquisition"
 draw_text(window_x1 + (window_width / 2), window_y1 + 12, "Edit Properties: " + global.PlayerData.starter_key + ".file");
 draw_set_halign(fa_left);
 draw_set_color(c_black);
-
+draw_set_font(fnt_vga);
 
 // --- 4. Draw the Animated Sprite on the Left ---
 var _sprite_w = sprite_get_width(sprite);
