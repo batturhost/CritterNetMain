@@ -92,3 +92,67 @@ function draw_scanlines_95(_x1, _y1, _x2, _y2) {
     
     draw_set_alpha(1.0); // Reset alpha
 }
+
+/// @function draw_scrolling_list(_x, _y, _w, _h, _list_data, _scroll_index, _selected_index, _row_height, _draw_color)
+/// @desc Draws a generic scrolling list with 90s style borders and clipping
+function draw_scrolling_list(_x, _y, _w, _h, _list_data, _scroll_index, _selected_index, _row_height, _draw_color) {
+    
+    // 1. Draw Background & Border
+    draw_set_color(c_white);
+    // Use a slightly off-white if desired, passed via _draw_color usually
+    if (_draw_color != c_white) draw_set_color(_draw_color); 
+    
+    draw_rectangle(_x, _y, _x + _w, _y + _h, false);
+    draw_border_95(_x, _y, _x + _w, _y + _h, "sunken");
+
+    // 2. Setup Clipping
+    gpu_set_scissor(_x + 2, _y + 2, _w - 4, _h - 4);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_middle);
+
+    // 3. Iterate & Draw Items
+    var _count = array_length(_list_data);
+    
+    for (var i = _scroll_index; i < _count; i++) {
+        var _draw_y = _y + 2 + ((i - _scroll_index) * _row_height);
+        
+        // Stop if we go past the bottom
+        if (_draw_y > _y + _h - _row_height) break;
+        
+        // Highlight Selection
+        if (i == _selected_index) {
+            draw_set_color(c_navy);
+            draw_rectangle(_x + 2, _draw_y, _x + _w - 2, _draw_y + _row_height, false);
+            draw_set_color(c_white);
+        } else {
+            draw_set_color(c_black);
+        }
+        
+        // Draw Text (Handle structs vs strings)
+        var _text = _list_data[i];
+        var _text_right = "";
+        
+        // If data is a struct, try to find common display properties
+        if (is_struct(_text)) {
+            if (variable_struct_exists(_text, "price")) _text_right = "$" + string(_text.price);
+            if (variable_struct_exists(_text, "name")) _text = _text.name;
+        }
+        
+        draw_text(_x + 5, _draw_y + (_row_height/2), _text);
+        
+        if (_text_right != "") {
+            draw_set_halign(fa_right);
+            draw_text(_x + _w - 10, _draw_y + (_row_height/2), _text_right);
+            draw_set_halign(fa_left);
+        }
+        
+        // Draw Divider
+        if (i != _selected_index) {
+            draw_set_color(c_ltgray);
+            draw_line(_x + 5, _draw_y + _row_height - 1, _x + _w - 5, _draw_y + _row_height - 1);
+        }
+    }
+
+    // 4. Reset
+    gpu_set_scissor(0, 0, display_get_gui_width(), display_get_gui_height());
+}

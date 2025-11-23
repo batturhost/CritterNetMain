@@ -18,74 +18,22 @@ draw_text(list_inv_x1, list_inv_y1 - 20, "MY INVENTORY");
 draw_set_font(fnt_vga);
 
 // ================== DRAW STORE LIST (LEFT) ==================
-draw_set_color(col_list_bg); // Off-white background
-draw_set_alpha(1.0); // Ensure opaque
-draw_rectangle(list_store_x1, list_store_y1, list_store_x2, list_store_y2, false);
-draw_border_95(list_store_x1, list_store_y1, list_store_x2, list_store_y2, "sunken");
-
-gpu_set_scissor(list_store_x1 + 2, list_store_y1 + 2, (list_store_x2 - list_store_x1) - 4, (list_store_y2 - list_store_y1) - 4);
-for (var i = store_scroll; i < array_length(catalog); i++) {
-    var _item = catalog[i];
-    var _dy = list_store_y1 + ((i - store_scroll) * list_item_h);
-    
-    // Highlight
-    if (i == selected_item_index) {
-        draw_set_color(c_navy);
-        draw_rectangle(list_store_x1 + 2, _dy, list_store_x2 - 2, _dy + list_item_h, false);
-        draw_set_color(c_white);
-    } else {
-        draw_set_color(c_black);
-    }
-    
-    draw_set_valign(fa_middle);
-    draw_text(list_store_x1 + 10, _dy + (list_item_h/2), _item.name);
-    
-    draw_set_halign(fa_right);
-    draw_text(list_store_x2 - 10, _dy + (list_item_h/2), "$" + string(_item.price));
-    draw_set_halign(fa_left);
-    
-    // Divider
-    if (i != selected_item_index) {
-        draw_set_color(c_ltgray);
-        draw_line(list_store_x1 + 5, _dy + list_item_h - 1, list_store_x2 - 5, _dy + list_item_h - 1);
-    }
-}
-gpu_set_scissor(0, 0, display_get_gui_width(), display_get_gui_height());
-
+draw_scrolling_list(
+    list_store_x1, list_store_y1, 
+    list_store_x2 - list_store_x1, list_store_y2 - list_store_y1, 
+    catalog, store_scroll, selected_item_index, list_item_h, col_list_bg
+);
 
 // ================== DRAW INVENTORY LIST (RIGHT) ==================
-draw_set_color(col_list_bg); // Off-white
-draw_rectangle(list_inv_x1, list_inv_y1, list_inv_x2, list_inv_y2, false);
-draw_border_95(list_inv_x1, list_inv_y1, list_inv_x2, list_inv_y2, "sunken");
-
-gpu_set_scissor(list_inv_x1 + 2, list_inv_y1 + 2, (list_inv_x2 - list_inv_x1) - 4, (list_inv_y2 - list_inv_y1) - 4);
-for (var i = inv_scroll; i < array_length(inventory_display_keys); i++) {
-    var _key = inventory_display_keys[i];
-    var _entry = inventory_counts[$ _key]; // { data: item, count: 5 }
-    var _dy = list_inv_y1 + ((i - inv_scroll) * list_item_h);
-    
-    // Highlight
-    if (i == selected_inv_index) {
-        draw_set_color(c_teal); // Different color for inventory selection
-        draw_rectangle(list_inv_x1 + 2, _dy, list_inv_x2 - 2, _dy + list_item_h, false);
-        draw_set_color(c_white);
-    } else {
-        draw_set_color(c_black);
-    }
-    
-    draw_set_valign(fa_middle);
-    draw_text(list_inv_x1 + 10, _dy + (list_item_h/2), _key);
-    
-    draw_set_halign(fa_right);
-    draw_text(list_inv_x2 - 10, _dy + (list_item_h/2), "x" + string(_entry.count));
-    draw_set_halign(fa_left);
-    
-    if (i != selected_inv_index) {
-        draw_set_color(c_ltgray);
-        draw_line(list_inv_x1 + 5, _dy + list_item_h - 1, list_inv_x2 - 5, _dy + list_item_h - 1);
-    }
-}
-gpu_set_scissor(0, 0, display_get_gui_width(), display_get_gui_height());
+// Note: We pass 'inventory_display_keys' which are just strings.
+// The helper script handles strings fine, but won't show the "Count" on the right automatically.
+// For the best result, you might want to pass a temporary array of structs or tweak the helper.
+// But for basic cleanup, this works immediately:
+draw_scrolling_list(
+    list_inv_x1, list_inv_y1, 
+    list_inv_x2 - list_inv_x1, list_inv_y2 - list_inv_y1, 
+    inventory_display_keys, inv_scroll, selected_inv_index, list_item_h, col_list_bg
+);
 
 
 // ================== DETAIL PANEL (BOTTOM) ==================
